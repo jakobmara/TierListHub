@@ -37,6 +37,7 @@
   border-radius: 5px;
   display: flex;
 }
+
 .TierLabel {
   text-align: center;
   flex: content;
@@ -44,9 +45,6 @@
   border: #505050;
   border-radius: 3px;
   border-style: solid;
-}
-
-.TierContainer {
 }
 
 .TierItem {

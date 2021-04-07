@@ -5,96 +5,156 @@ class CreateTierList extends Component {
 
 	constructor(props) {
 		super(props)
-		this.tierlist = [
-			<Tier tierName="S" id="1" items={[
-				<TierItem position="1" tierId="1" id="1" handleDrag={this.handleDrag} handleDrop={this.handleDrop}/>,
-				<TierItem position="1" tierId="1" id="2" handleDrag={this.handleDrag} handleDrop={this.handleDrop}/>]}/>,
-			<Tier tierName="D" id="2" items={[
-				<TierItem position="1" tierId="2" id="3" handleDrag={this.handleDrag} handleDrop={this.handleDrop}/>,
-				<TierItem position="2" tierId="3" id="3" handleDrag={this.handleDrag} handleDrop={this.handleDrop}/>]}/>,
-			<Tier tierName="F" id="3" items={[
-				<TierItem position="1" tierId="3" id="4" handleDrag={this.handleDrag} handleDrop={this.handleDrop}/>,
-				<TierItem position="2" tierId="3" id="5" handleDrag={this.handleDrag} handleDrop={this.handleDrop}/>]}/>,
-		]
+
 		this.handleDrag = this.handleDrag.bind(this);
-		this.handleDrop = this.handleDrop.bind(this);
+		this.handleDropOnItem = this.handleDropOnItem.bind(this);
+		this.handleDropOnTier = this.handleDropOnTier.bind(this);
+
+
+		this.state = {
+			tierlist: [
+				{id: "1", tierName: "S", items: [
+					{id: "1", position: 1}, {id: "2", position: 2}]
+				},
+				{id: "2", tierName: "D", items: [
+					{id: "3", position: 1}, {id: "4", position: 2}]
+				},
+				{id: "3", tierName: "F", items: [
+					{id: "5", position: 1}, {id: "6", position: 2}]
+				},
+				{id: "-1", tierName: "Unsorted", items: []}
+			],
+			unsortedItems: [],
+			dragId: "-1",
+			dragTierId: "-1"
+		}
 	}
 
 	handleDrag(ev) {
-		console.log(this)
-		this.dragId = ev.currentTarget.id
-		this.dragTierId = ev.currentTarget.tierId
+		this.setState({
+			dragId: ev.currentTarget.id,
+			dragTierId: ev.currentTarget.parentNode.id
+		})
+		console.log(ev.currentTarget)
+		console.log("In Drag")
+		console.log("DragID: " + ev.currentTarget.id)
+		console.log("DragTierID: " + ev.currentTarget.parentNode.id)
 	}
 
-	handleDrop(ev) {
-		var dragTierIndex = this.tierlist.findIndex((tier) => tier.id === this.dragTierId);
-		var dropTierIndex = this.tierlist.findIndex((tier) => tier.id === ev.currentTarget.tierId);
-		console.log("Drag Tier: " + this.tierlist[dragTierIndex].tierName)
-		console.log("Drop Tier: " + this.tierlist[dragTierIndex].tierName)
-		var dragItemIndex = this.tierlist[dragTierIndex].items.findIndex((item) => item.id === this.dragId);
-		var dropItem = this.tierlist[dropTierIndex].items.findIndex((item) => item.id === ev.currentTarget.id);
-	
-		var dragItem = this.tierlist[dragTierIndex].items[dragItemIndex]
-		this.tierlist[dragTierIndex].items.splice(dragItemIndex, 1)
-		this.tierlist[dropTierIndex].items.push(dragItem)
+	handleDropOnItem(ev) {
+		console.log("Dropped on Item")
+		console.log("DropID: " + ev.currentTarget.id)
+		console.log("DropTierID: " + ev.currentTarget.parentNode.id)
+		
+		let dragId = this.state.dragId
+		let dragTierId = this.state.dragTierId
+		
+		let dropId = ev.currentTarget.id
+		let dropTierId = ev.currentTarget.parentNode.id
 
-		var dragItemPos = dragItem.position;
-		var dropItemPos = dropItem.position;
-		/*
-		var newTierListState = this.tierlist.map((tier) => {
-		  if (box.id === dragId) {
-			box.order = dropBoxOrder;
-		  }
-		  if (box.id === ev.currentTarget.id) {
-			box.order = dragBoxOrder;
-		  }
-		  return box;
-		});
-	
-		this.tierlist = newTierListState
-		*/
+		let dragTier = this.state.tierlist.find((tier) => tier.id === dragTierId)
+		let dragItem = dragTier.items.find((item) => item.id == dragId)
+		let newTierListState = this.state.tierlist.map((tier) => {
+			if (tier.id === dragTierId) {
+				let tierItemIndex = tier.items.findIndex((tierItem) => tierItem.id === dragId)
+				tier.items.splice(tierItemIndex, 1)
+			}
+			if (tier.id === dropTierId) {
+				tier.items.push(dragItem)
+			}
+			return tier
+		})
+		console.log(newTierListState)
+		this.setState({tierlist: newTierListState})
 	  };
 
+	  handleDropOnTier(ev) {
+		console.log("Dropped On Tier")
+		console.log("DropTierID: " + ev.currentTarget.id)
+		
+		let dragId = this.state.dragId
+		let dragTierId = this.state.dragTierId
+		
+		let dropTierId = ev.currentTarget.id
+
+		let dragTier = this.state.tierlist.find((tier) => tier.id === dragTierId)
+		let dragItem = dragTier.items.find((item) => item.id === dragId)
+		let newTierListState = this.state.tierlist.map((tier) => {
+			if (tier.id === dragTierId) {
+				let tierItemIndex = tier.items.findIndex((tierItem) => tierItem.id === dragId)
+				tier.items.splice(tierItemIndex, 1)
+			}
+			if (tier.id === dropTierId) {
+				tier.items.push(dragItem)
+			}
+			return tier
+		})
+		console.log(newTierListState)
+		this.setState({tierlist: newTierListState})
+	  };
+
+	  addNewTierItem() {
+		  alert("Gotcha")
+	  }
+
 	render() {
-		console.log(this.tierlist)
 		return (
 			<div className="CreateTierList">
 				<div className="TierListContainer">
-					{this.tierlist}		
+					{this.state.tierlist.map((tier) => (
+						<Tier
+							id={tier.id}
+							tierName={tier.tierName}
+							items={tier.items}
+							handleDrag={this.handleDrag}
+							handleDropOnItem={this.handleDropOnItem}
+							handleDropOnTier={this.handleDropOnTier}
+						/>)
+					)}
 				</div>
+				<button onClick={this.addNewTierItem}>
+					Add New Item
+				</button>
 			</div>
 		);
 	}
 }
 	
 
-const Tier = ({tierName, id, items}) => {
+const Tier = ({tierName, id, items, handleDrag, handleDropOnItem, handleDropOnTier}) => {
 	return (
-		<div className="Tier" id={id}>
+		<div className="Tier" id={id} onDrop={handleDropOnTier} onDragOver={(ev) => ev.preventDefault()}>
 			<h1 className="TierLabel">{tierName}</h1>
-			<div className="TierContainer">
-				{
-				items
-				}
+			<div className="TierContainer" id={id}>
+				{items.map((tierItem) => (
+					<TierItem
+						id={tierItem.id}
+						position={tierItem.position}
+						tierid={id}
+						handleDrag={handleDrag}
+						handleDrop={handleDropOnItem}
+					/>)
+				)}
 			</div>
 		</div>
 	)
 }
 
 
-const TierItem = ({position, tierId, id, handleDrag, handleDrop}) => {
+const TierItem = ({id, tierid, position, handleDrag, handleDrop}) => {
 	return (
 		<img
-		tierId={tierId}
 		id={id}
+		tierid={tierid}
 		position={position}
 		className="TierItem"
 		src="https://upload.wikimedia.org/wikipedia/en/a/a9/MarioNSMBUDeluxe.png"
+		alt=""
 
 		draggable={true}
-		onDragOver={(ev) => ev.preventDefault()}
+		//onDragOver={(ev) => ev.preventDefault()}
 		onDragStart={handleDrag}
-		onDrop={handleDrop}
+		//onDrop={handleDrop}
 		/>
 	)
 }
