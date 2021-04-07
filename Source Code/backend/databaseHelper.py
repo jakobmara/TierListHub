@@ -1,3 +1,4 @@
+from array import array
 import sqlite3
 from flask import current_app, g
 import hashlib
@@ -22,7 +23,7 @@ def createUserTable():
     conn.close()
 
 
-
+# helper function for createTemplate and createTierList
 def createTemplateTable():
     conn = sqlite3.connect(DBNAME)
 
@@ -34,7 +35,8 @@ def createTemplateTable():
             userID INTEGER,
             name VARCHAR,
             tier_labels VARCHAR,
-            FOREIGN KEY (userID) REFERENCES users(id)
+            displayImage VARCHAR,
+            FOREIGN KEY ( userID ) REFERENCES users( id )
         )
         '''
     cur.execute(sql)
@@ -54,8 +56,8 @@ def createTierListTable():
             userID INTEGER,
             templateID INTEGER,
             rankings VARCHAR,
-            FOREIGN KEY(userID) REFERENCES users(id),
-            FOREIGN KEY(templateID) REFERENCES templates(id)
+            FOREIGN KEY( userID ) REFERENCES users( id ),
+            FOREIGN KEY( templateID ) REFERENCES templates( id )
         )
         '''
     cur.execute(sql)
@@ -73,7 +75,7 @@ def createImageTable():
             uid INTEGER PRIMARY KEY AUTOINCREMENT,
             templateID INTEGER,
             image VARCHAR,
-            FOREIGN KEY (templateID) REFERENCES templates(id)
+            FOREIGN KEY ( templateID ) REFERENCES templates( id )
         )
         '''
     cur.execute(sql)
@@ -81,19 +83,48 @@ def createImageTable():
     cur.close()
     conn.close()
 
-def createTemplate(userID, title, labels,images):
-    insertTemplate(userID,title,labels)
+def createTierList(userID,tempID,title,labels,rankings,titleImage,images):
+    #check to see if template exists already if not then create one
+    if tempID == -1:
+        tempID = createTemplate(userID,title,labels, titleImage, images)
+
+    #check if tierlist has already been made if so call updateTierListTable()
+    insertTierListTable(userID,tempID,rankings)
+    
+    pass
+
+
+
+#Allows user to change rankings of previosuly set list
+def updateTierList(userID, tierListID, rankings):
+    conn = sqlite3.connect()
+
+    cur = conn.cursor()
+    sql = ''' UPDATE tierLists SET rankings= ? WHERE userID = ? AND uid = ?'''
+
+    data = [rankings,userID,tierListID]
+
+    cur.execute(sql,data)
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    
+
+# Create template is called when user wants to create a new template 
+def createTemplate(userID, title, labels, titleImage,images) -> int:
+    insertTemplate(userID,title,labels, titleImage)
     
     conn = sqlite3.connect(DBNAME)
 
     cur = conn.cursor()
-
+    print(f"userID: {userID} template name: {title}")
     # Used to find template ID of newly inserted template
-    sql = f''' SELECT t.uid FROM templates as t WHERE t.userID = {userID} and t.name = {title} 
-            '''
+    sql = f''' SELECT t.uid FROM templates as t WHERE t.userID = ? AND t.name = ? '''
     
-    cur.execute(sql)
-    tempID = cur.fetchone()
+    data = [userID, title]
+    cur.execute(sql,data)
+    tempID = cur.fetchone()[0]
 
     conn.commit()
     cur.close()
@@ -101,9 +132,40 @@ def createTemplate(userID, title, labels,images):
     print(f"temp id: {tempID}")
 
     # RN assumeing images is an array of base64 encoded strings... However I will most likely have to do some string manipulation to turn in array
+    
     for i in images:
-        insertImage(tempID,images)
+        insertImage(tempID,i)
+    return tempID
 
+
+def getTierLists(userID=None, templateID = None) -> array:
+    # get template ID
+    conn = sqlite3.connect()
+    cur = conn.cursor()
+    
+    if userID == None:
+        sql = '''SELECT * FROM tierLists WHERE userID = ?'''
+        data = [userID]
+    else:
+        sql = '''SELECT * FROM tierLists WHERE templateID = ? '''
+        data = [templateID]
+    
+    cur.execute(sql,data)
+    tierLists = cur.fetchall()
+    cur.close()
+    conn.close()
+    return tierLists
+
+def getTemplates(userID) -> array:
+    conn = sqlite3.connect()
+    cur = conn.cursor()
+
+    sql = '''SELECT * FROM templates WHERE userID = ? '''
+    cur.execute(sql)
+    templates = cur.fetchall()
+    conn.close()
+    cur.close()
+    return templates
 
 def insertUser(name, password):
     conn = sqlite3.connect(DBNAME)
@@ -112,22 +174,23 @@ def insertUser(name, password):
 
     newPass = hashlib.sha1(password.encode('utf-8')).hexdigest()
 
-    sql = f'''INSERT INTO users(username,password) VALUES ("{name}","{newPass}")'''
-    
-    cur.execute(sql)
+    sql = f'''INSERT INTO users(username,password) VALUES (?,?)'''
+    data = [name, newPass]
+    cur.execute(sql,data)
     conn.commit()
     cur.close()
     conn.close()
     
 
-def insertTemplate(userID, title, labels):
+def insertTemplate(userID, title, labels, dispmage):
     conn = sqlite3.connect(DBNAME)
 
     cur = conn.cursor()
 
-    sql = f'''INSERT INTO templates(userID,name,tier_labels) VALUES ({userID},"{title}","{labels}")'''
+    sql = '''INSERT INTO templates(userID,name,tier_labels,displayImage) VALUES (?,?,?,?)'''
 
-    cur.execute(sql)
+    data = [userID,title,labels,dispmage]
+    cur.execute(sql,data)
     conn.commit()
     cur.close()
     conn.close()
@@ -138,10 +201,10 @@ def insertTierListTable(userID, tempID, rankings):
 
     cur = conn.cursor()
 
-    sql = f'''INSERT INTO tierLists(userID,templateID,rankings) VALUES ({userID},{tempID},"{rankings}")'''
+    sql = '''INSERT INTO tierLists(userID,templateID,rankings) VALUES (?,?,?)'''
+    data = [userID,tempID,rankings]
 
-
-    cur.execute(sql)
+    cur.execute(sql,data)
     conn.commit()
     cur.close()
     conn.close()
@@ -152,9 +215,10 @@ def insertImage(tempID, image):
 
     cur = conn.cursor()
 
-    sql = f'''INSERT INTO images(templateID,image) VALUES ({tempID},{image})'''
+    sql = '''INSERT INTO images(templateID,image) VALUES (?,?)'''
 
-    cur.execute(sql)
+    data = [tempID,image]
+    cur.execute(sql,data)
     conn.commit()
     cur.close()
     conn.close()
@@ -182,7 +246,7 @@ def dropTables():
     cursor.execute("DROP TABLE IF EXISTS users")
     cursor.execute("DROP TABLE IF EXISTS templates")
     cursor.execute("DROP TABLE IF EXISTS images")
-    cursor.execute("DROP TABLE IF EXISTS tierList")
+    cursor.execute("DROP TABLE IF EXISTS tierLists")
     cursor.close()
     conn.commit()
     conn.close()
@@ -190,34 +254,39 @@ def dropTables():
 def testDB():
     insertUser("Jake","badPassword")
     insertUser("Levi","badPassword")
-    insertTemplate(2,"marioList","S,A,B,C,D,F")
-    insertTierListTable(2,1,"S:Mario,Luigi,Bowser/A:Peach,Wario/F:Daisy,Toad")
-
+    #insertTierListTable(2,1,"S:Mario,Luigi,Bowser\A:Peach,Wario\F:Daisy,Toad")
+    '''
     conn = sqlite3.connect(DBNAME)
 
     cursor = conn.cursor()
-    sSql =  '''
+    sSql =  
             SELECT * FROM users
-            '''
+            
     cursor.execute(sSql)
     result = cursor.fetchall()
     print(result)
 
-
-
-    
-    fSql = ''' SELECT u.uid, u.username FROM users as u
+    fSql =  SELECT u.uid, u.username FROM users as u
             INNER JOIN templates ON u.uid=templates.userID
-            '''
+            
     cursor.execute(fSql)
     result = cursor.fetchall()
     print(result)
 
     cursor.close()
     conn.close()
+    '''
+    f = open("imageHolderFile","r")
+    images = f.readlines()
+    f.close()
+    newF = open("titleImage.txt","r")
+    titleImage = newF.readline()
+    newF.close()
+    #createTemplate(2,"Levi's MarioList","S+,A,B,C,D,F", images)
 
-
-    createTemplate()
+    insertTemplate(1,"marioList","S,A,B,C,D,F",titleImage)
+    print("does exist: ")
+    createTierList(2,-1, "Levi's Mario","S,A,F","S:Mario,Bowser\A:Peach, Wario\F:Toad, Waluigi",titleImage,images)
 
 if __name__ == "__main__":
     dropTables()
