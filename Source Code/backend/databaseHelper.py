@@ -31,7 +31,7 @@ def createTemplateTable():
     
     sql = ''' 
         CREATE TABLE templates(
-            uid INTEGER PRIMARY KEY AUTOINCREMENT,
+            uid INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
             userID INTEGER,
             name VARCHAR,
             tier_labels VARCHAR,
@@ -72,8 +72,8 @@ def createImageTable():
     cur = conn.cursor()
     sql = ''' 
         CREATE TABLE images(
-            uid INTEGER PRIMARY KEY AUTOINCREMENT,
-            templateID INTEGER,
+            uid INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
+            templateID INTEGER NOT NULL,
             image VARCHAR,
             FOREIGN KEY ( templateID ) REFERENCES templates( id )
         )
@@ -93,7 +93,20 @@ def createTierList(userID,tempID,title,labels,rankings,titleImage,images):
     
     pass
 
+def deleteImage(imageID):
+    conn = sqlite3.connect(DBNAME)
+    cur = conn.cursor()
 
+    sql = ''' DELETE FROM images where uid = ?'''
+    
+    data = [imageID]
+    cur.execute(sql,data)
+    conn.commit()
+    cur.close()
+    conn.close()
+
+
+    pass
 
 #Allows user to change rankings of previosuly set list
 def updateTierList(userID, tierListID, rankings):
@@ -287,6 +300,7 @@ def testDB():
     insertTemplate(1,"marioList","S,A,B,C,D,F",titleImage)
     print("does exist: ")
     createTierList(2,-1, "Levi's Mario","S,A,F","S:Mario,Bowser\A:Peach, Wario\F:Toad, Waluigi",titleImage,images)
+    deleteImage(3)
 
 if __name__ == "__main__":
     dropTables()
