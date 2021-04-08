@@ -7,27 +7,46 @@ class CreateTierList extends Component {
 		super(props)
 
 		this.handleDrag = this.handleDrag.bind(this);
-		this.handleDropOnItem = this.handleDropOnItem.bind(this);
 		this.handleDropOnTier = this.handleDropOnTier.bind(this);
+		this.deleteItem = this.deleteItem.bind(this)
+		
+		this.addNewTierItem = this.addNewTierItem.bind(this)
 
+		let defaultImg = "https://upload.wikimedia.org/wikipedia/en/a/a9/MarioNSMBUDeluxe.png"
 
 		this.state = {
 			tierlist: [
 				{id: "1", tierName: "S", items: [
-					{id: "1", position: 1}, {id: "2", position: 2}]
+					{id: "1", position: 1, img: defaultImg}, {id: "2", position: 2, img: defaultImg}]
 				},
 				{id: "2", tierName: "D", items: [
-					{id: "3", position: 1}, {id: "4", position: 2}]
+					{id: "3", position: 1, img: defaultImg}, {id: "4", position: 2, img: defaultImg}]
 				},
 				{id: "3", tierName: "F", items: [
-					{id: "5", position: 1}, {id: "6", position: 2}]
+					{id: "5", position: 1, img: defaultImg}, {id: "6", position: 2, img: defaultImg}]
 				},
 				{id: "-1", tierName: "Unsorted", items: []}
 			],
-			unsortedItems: [],
+			userId: "1",
 			dragId: "-1",
 			dragTierId: "-1"
 		}
+	}
+
+	componentDidMount() {
+		this.getTemplateId()
+	}
+
+	getTemplateId() {
+		let getTemplateRequest = {
+			method: 'GET',
+			mode: 'cors',
+			cache: 'default',
+		}
+		
+		fetch("http://localhost:5000/getTemplateId?userId=" + this.state.userId, getTemplateRequest)
+			.then(res => res.json())
+			.then(res => this.setState({templateId: res.templateId}))
 	}
 
 	handleDrag(ev) {
@@ -35,50 +54,24 @@ class CreateTierList extends Component {
 			dragId: ev.currentTarget.id,
 			dragTierId: ev.currentTarget.parentNode.id
 		})
-		console.log(ev.currentTarget)
 		console.log("In Drag")
 		console.log("DragID: " + ev.currentTarget.id)
 		console.log("DragTierID: " + ev.currentTarget.parentNode.id)
 	}
 
-	handleDropOnItem(ev) {
-		console.log("Dropped on Item")
-		console.log("DropID: " + ev.currentTarget.id)
-		console.log("DropTierID: " + ev.currentTarget.parentNode.id)
-		
-		let dragId = this.state.dragId
-		let dragTierId = this.state.dragTierId
-		
-		let dropId = ev.currentTarget.id
-		let dropTierId = ev.currentTarget.parentNode.id
 
-		let dragTier = this.state.tierlist.find((tier) => tier.id === dragTierId)
-		let dragItem = dragTier.items.find((item) => item.id == dragId)
-		let newTierListState = this.state.tierlist.map((tier) => {
-			if (tier.id === dragTierId) {
-				let tierItemIndex = tier.items.findIndex((tierItem) => tierItem.id === dragId)
-				tier.items.splice(tierItemIndex, 1)
-			}
-			if (tier.id === dropTierId) {
-				tier.items.push(dragItem)
-			}
-			return tier
-		})
-		console.log(newTierListState)
-		this.setState({tierlist: newTierListState})
-	  };
-
-	  handleDropOnTier(ev) {
+	handleDropOnTier(ev) {
 		console.log("Dropped On Tier")
 		console.log("DropTierID: " + ev.currentTarget.id)
-		
+
 		let dragId = this.state.dragId
 		let dragTierId = this.state.dragTierId
-		
+
 		let dropTierId = ev.currentTarget.id
 
 		let dragTier = this.state.tierlist.find((tier) => tier.id === dragTierId)
-		let dragItem = dragTier.items.find((item) => item.id === dragId)
+		const dragItem = dragTier.items.find((item) => item.id === dragId)
+
 		let newTierListState = this.state.tierlist.map((tier) => {
 			if (tier.id === dragTierId) {
 				let tierItemIndex = tier.items.findIndex((tierItem) => tierItem.id === dragId)
@@ -90,31 +83,88 @@ class CreateTierList extends Component {
 			return tier
 		})
 		console.log(newTierListState)
+		
 		this.setState({tierlist: newTierListState})
 	  };
 
-	  addNewTierItem() {
-		  alert("Gotcha")
+
+	addNewTierItem(ev) {
+		let file = URL.createObjectURL(ev.target.files[0])
+		var maxId = 0
+		for (const tier in this.state.tierlist) {
+			for (const item in this.state.tierlist[tier].items) {
+				if (this.state.tierlist[tier].items[item].id > maxId) {
+					maxId = this.state.tierlist[tier].items[item].id
+				}
+			}
+		}
+
+		let newItem = {id: String(parseInt(maxId) + 1), position: 99, img: file}
+
+		const newTierListState = this.state.tierlist.map((tier) => {
+			if (tier.id === "-1") {
+				tier.items.push(newItem)
+			}
+			return tier
+		})
+
+		this.setState({tierlist: newTierListState})
+	}
+
+
+	deleteItem(ev) {
+		console.log("Deleting")
+		let dragId = this.state.dragId
+		let dragTierId = this.state.dragTierId
+
+		let newTierListState = this.state.tierlist.map((tier) => {
+			if (tier.id === dragTierId) {
+				let tierItemIndex = tier.items.findIndex((tierItem) => tierItem.id === dragId)
+				tier.items.splice(tierItemIndex, 1)
+			}
+
+			return tier
+		})
+
+		console.log(newTierListState)
+		
+		this.setState({tierlist: newTierListState})
+
 	  }
 
 	render() {
 		return (
 			<div className="CreateTierList">
+				<button onClick={(e) => console.log(this.state)}>Debug</button>
 				<div className="TierListContainer">
+				<div className="Tier">
+						<h1 className="TierLabel"><input></input></h1>
+						<div className="TierContainer"></div>
+				</div>
+
 					{this.state.tierlist.map((tier) => (
 						<Tier
 							id={tier.id}
 							tierName={tier.tierName}
 							items={tier.items}
 							handleDrag={this.handleDrag}
-							handleDropOnItem={this.handleDropOnItem}
 							handleDropOnTier={this.handleDropOnTier}
 						/>)
 					)}
 				</div>
-				<button onClick={this.addNewTierItem}>
-					Add New Item
-				</button>
+				<div className="AddNewItemContainer">
+					<input 
+						type="file"
+						name="file"
+						onChange={this.addNewTierItem}
+					/>
+					<img
+						src="https://static.thenounproject.com/png/1237-200.png"
+						onDragOver={(ev) => ev.preventDefault()}
+						onDrop={(ev) => this.deleteItem(ev)}
+						alt=""
+					/>
+				</div>
 			</div>
 		);
 	}
@@ -123,7 +173,11 @@ class CreateTierList extends Component {
 
 const Tier = ({tierName, id, items, handleDrag, handleDropOnItem, handleDropOnTier}) => {
 	return (
-		<div className="Tier" id={id} onDrop={handleDropOnTier} onDragOver={(ev) => ev.preventDefault()}>
+		<div className="Tier" 
+			id={id} 
+			onDrop={handleDropOnTier}
+			onDragOver={(ev) => ev.preventDefault()}>
+			
 			<h1 className="TierLabel">{tierName}</h1>
 			<div className="TierContainer" id={id}>
 				{items.map((tierItem) => (
@@ -133,6 +187,7 @@ const Tier = ({tierName, id, items, handleDrag, handleDropOnItem, handleDropOnTi
 						tierid={id}
 						handleDrag={handleDrag}
 						handleDrop={handleDropOnItem}
+						img={tierItem.img}
 					/>)
 				)}
 			</div>
@@ -141,20 +196,18 @@ const Tier = ({tierName, id, items, handleDrag, handleDropOnItem, handleDropOnTi
 }
 
 
-const TierItem = ({id, tierid, position, handleDrag, handleDrop}) => {
+const TierItem = ({id, tierid, position, handleDrag, img}) => {
 	return (
 		<img
-		id={id}
-		tierid={tierid}
-		position={position}
-		className="TierItem"
-		src="https://upload.wikimedia.org/wikipedia/en/a/a9/MarioNSMBUDeluxe.png"
-		alt=""
+			id={id}
+			tierid={tierid}
+			position={position}
+			className="TierItem"
+			src={img}
+			alt=""
 
-		draggable={true}
-		//onDragOver={(ev) => ev.preventDefault()}
-		onDragStart={handleDrag}
-		//onDrop={handleDrop}
+			draggable={true}
+			onDragStart={handleDrag}
 		/>
 	)
 }
