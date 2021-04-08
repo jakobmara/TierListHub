@@ -3,6 +3,7 @@ import sqlite3
 from flask import current_app, g
 import hashlib
 import os
+import json 
 DBNAME = os.path.join(os.path.curdir, "CP476TP.db")
 
 
@@ -12,7 +13,7 @@ def createUserTable():
     cur = conn.cursor()
     sql = ''' 
         CREATE TABLE users(
-            uid INTEGER PRIMARY KEY AUTOINCREMENT,
+            uid INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
             username VARCHAR,
             password VARCHAR
         )
@@ -32,11 +33,11 @@ def createTemplateTable():
     sql = ''' 
         CREATE TABLE templates(
             uid INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
-            userID INTEGER,
+            userID INTEGER NOT NULL,
             name VARCHAR,
             tier_labels VARCHAR,
             displayImage VARCHAR,
-            FOREIGN KEY ( userID ) REFERENCES users( id )
+            FOREIGN KEY ( userID ) REFERENCES users( uid )
         )
         '''
     cur.execute(sql)
@@ -45,19 +46,19 @@ def createTemplateTable():
     conn.close()
 
 
-
 def createTierListTable():
     conn = sqlite3.connect(DBNAME)
 
     cur = conn.cursor()
     sql = ''' 
         CREATE TABLE tierLists(
-            uid INTEGER PRIMARY KEY AUTOINCREMENT,
-            userID INTEGER,
-            templateID INTEGER,
+            uid INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
+            userID INTEGER NOT NULL,
+            templateID INTEGER NOT NULL,
             rankings VARCHAR,
-            FOREIGN KEY( userID ) REFERENCES users( id ),
-            FOREIGN KEY( templateID ) REFERENCES templates( id )
+            listName VARCHAR,
+            FOREIGN KEY( userID ) REFERENCES users( uid ) ON DELETE CASCADE,
+            FOREIGN KEY( templateID ) REFERENCES templates( uid ) ON DELETE CASCADE
         )
         '''
     cur.execute(sql)
@@ -75,7 +76,7 @@ def createImageTable():
             uid INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
             templateID INTEGER NOT NULL,
             image VARCHAR,
-            FOREIGN KEY ( templateID ) REFERENCES templates( id )
+            FOREIGN KEY ( templateID ) REFERENCES templates( uid ) ON DELETE CASCADE
         )
         '''
     cur.execute(sql)
@@ -83,15 +84,47 @@ def createImageTable():
     cur.close()
     conn.close()
 
-def createTierList(userID,tempID,title,labels,rankings,titleImage,images):
+# Should i modify this function so it assumes that tempID has already been created? I think yes
+def createTierList(userID,tempID,listName,labels,rankings,titleImage,images):
     #check to see if template exists already if not then create one
     if tempID == -1:
-        tempID = createTemplate(userID,title,labels, titleImage, images)
+        tempID = createTemplate(userID,listName,labels, titleImage, images)
 
     #check if tierlist has already been made if so call updateTierListTable()
-    insertTierListTable(userID,tempID,rankings)
-    
-    pass
+    insertTierListTable(userID,tempID,rankings, listName)
+
+    conn = sqlite3.connect()
+    cur = conn.cursor()
+    sql = f''' SELECT t.uid FROM tierLists as t WHERE t.userID = ? AND t.listName = ? '''
+    data = [userID, listName]
+
+    cur.execute(sql,data)
+    tlID = cur.fetchone()[0]
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return tlID
+
+def createTierListFromTemplate(userID,tempID,listName,rankings):
+    #check to see if template exists already if not then create one
+
+    #check if tierlist has already been made if so call updateTierListTable()
+    insertTierListTable(userID,tempID,rankings, listName)
+
+    conn = sqlite3.connect()
+    cur = conn.cursor()
+    sql = f''' SELECT t.uid FROM tierLists as t WHERE t.userID = ? AND t.listName = ? '''
+    data = [userID, listName]
+
+    cur.execute(sql,data)
+    tlID = cur.fetchone()[0]
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return tlID
+
 
 def deleteImage(imageID):
     conn = sqlite3.connect(DBNAME)
@@ -106,11 +139,38 @@ def deleteImage(imageID):
     conn.close()
 
 
-    pass
+# needs userID to confirm its the user's template
+def deleteTemplate(userID, tempID):
+    conn = sqlite3.connect(DBNAME)
+    cur = conn.cursor()
+    cur.execute('PRAGMA foreign_keys = ON')
+    sql = ''' DELETE FROM templates WHERE userID = ? AND uid = ? '''
+    data = [userID, tempID]
+    print(f"DELETING useriD: {userID} template id: {tempID}")
+
+    cur.execute(sql,data)
+    conn.commit()
+    cur.close()
+    conn.close()
+
+
+# needs userID to confirm its the user's tier list
+def deleteTierList(userID, listID):
+    conn = sqlite3.connect(DBNAME)
+    cur = conn.cursor()
+    cur.execute('PRAGMA foreign_keys = ON')
+    sql = ''' DELETE FROM tierLists WHERE userID = ? AND uid = ? '''
+    data = [userID, listID]
+
+    cur.execute(sql,data)
+    conn.commit()
+    cur.close()
+    conn.close()
+
 
 #Allows user to change rankings of previosuly set list
 def updateTierList(userID, tierListID, rankings):
-    conn = sqlite3.connect()
+    conn = sqlite3.connect(DBNAME)
 
     cur = conn.cursor()
     sql = ''' UPDATE tierLists SET rankings= ? WHERE userID = ? AND uid = ?'''
@@ -122,7 +182,6 @@ def updateTierList(userID, tierListID, rankings):
     cur.close()
     conn.close()
 
-    
 
 # Create template is called when user wants to create a new template 
 def createTemplate(userID, title, labels, titleImage,images) -> int:
@@ -169,6 +228,7 @@ def getTierLists(userID=None, templateID = None) -> array:
     conn.close()
     return tierLists
 
+
 def getTemplates(userID) -> array:
     conn = sqlite3.connect()
     cur = conn.cursor()
@@ -179,6 +239,7 @@ def getTemplates(userID) -> array:
     conn.close()
     cur.close()
     return templates
+
 
 def insertUser(name, password):
     conn = sqlite3.connect(DBNAME)
@@ -209,13 +270,13 @@ def insertTemplate(userID, title, labels, dispmage):
     conn.close()
 
 
-def insertTierListTable(userID, tempID, rankings):
+def insertTierListTable(userID, tempID, rankings, listName):
     conn = sqlite3.connect(DBNAME)
 
     cur = conn.cursor()
 
-    sql = '''INSERT INTO tierLists(userID,templateID,rankings) VALUES (?,?,?)'''
-    data = [userID,tempID,rankings]
+    sql = '''INSERT INTO tierLists(userID,templateID,rankings,listName) VALUES (?,?,?, ?)'''
+    data = [userID,tempID,rankings, listName]
 
     cur.execute(sql,data)
     conn.commit()
@@ -236,21 +297,29 @@ def insertImage(tempID, image):
     cur.close()
     conn.close()
 
+def extractTemplateInfo(self,jsonString):
+    
+    values = json.loads(jsonString)
 
-def convertToBinaryData(filename):
-    # Convert digital data to binary format
-    with open(filename, 'rb') as file:
-        blobData = file.read()
-    return blobData
+    userID = values['userID']
 
+    rankings = values['rankings']
+
+    listName = values['listName']
+
+    images = values['images']
+
+    titleImage = values['titleImage']
+
+
+
+    pass
 
 def populateDB():
     createUserTable()
     createTemplateTable()
     createTierListTable()
     createImageTable()
-
-
 
 
 def dropTables():
@@ -267,28 +336,7 @@ def dropTables():
 def testDB():
     insertUser("Jake","badPassword")
     insertUser("Levi","badPassword")
-    #insertTierListTable(2,1,"S:Mario,Luigi,Bowser\A:Peach,Wario\F:Daisy,Toad")
-    '''
-    conn = sqlite3.connect(DBNAME)
-
-    cursor = conn.cursor()
-    sSql =  
-            SELECT * FROM users
-            
-    cursor.execute(sSql)
-    result = cursor.fetchall()
-    print(result)
-
-    fSql =  SELECT u.uid, u.username FROM users as u
-            INNER JOIN templates ON u.uid=templates.userID
-            
-    cursor.execute(fSql)
-    result = cursor.fetchall()
-    print(result)
-
-    cursor.close()
-    conn.close()
-    '''
+    
     f = open("imageHolderFile","r")
     images = f.readlines()
     f.close()
@@ -300,7 +348,7 @@ def testDB():
     insertTemplate(1,"marioList","S,A,B,C,D,F",titleImage)
     print("does exist: ")
     createTierList(2,-1, "Levi's Mario","S,A,F","S:Mario,Bowser\A:Peach, Wario\F:Toad, Waluigi",titleImage,images)
-    deleteImage(3)
+    #deleteTierList(2,1)
 
 if __name__ == "__main__":
     dropTables()
