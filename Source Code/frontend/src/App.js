@@ -28,7 +28,7 @@ class App extends Component {
         <Route exact path="/login">
         <UserLogin/>
         </Route>
-        <Route exact path="/createTierList">
+        <Route exact path="/createTemplate">
         <CreateTierList/>
         </Route>
         <Route path="/" >

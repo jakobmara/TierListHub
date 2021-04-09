@@ -53,9 +53,10 @@ def userLogin():
     user = data["username"]
     password = data["password"]
     print(f"USER: {user}")
-    if databaseHelper.userLogin(user,password):
+    uID = databaseHelper.userLogin(user,password)
+    if uID != -1:
         print("Sucessfully logged in ")
-        resp = jsonify({"errorMessage": "no errors"})
+        resp = jsonify({"errorMessage": "no errors", "userID": uID})
     else:
         print("invalid password or username")
         resp = jsonify({"errorMessage": "invalid password or username"})

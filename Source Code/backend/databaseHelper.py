@@ -282,9 +282,14 @@ def userLogin(name,password):
 
     user = cur.fetchall()
 
+    print(user[0])
     cur.close()
     conn.close()
-    return len(user) == 1
+    if len(user) == 0:
+        userID = -1
+    else:
+        userID = user[0][0]
+    return userID
 
 
 def insertTemplate(userID, title, labels, dispmage):

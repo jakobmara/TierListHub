@@ -59,7 +59,7 @@ class UserLogin extends Component {
                     this.setState({errorMessage: json.errorMessage})
                 }else{
                     this.setState({errorMessage : ""})
-                    this.setState({redirect: "/CreateTierList"});
+                    this.setState({redirect: "/"});
 
                 }
 
