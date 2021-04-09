@@ -102,7 +102,10 @@ class CreateTierList extends Component {
 
 		let requestBody = {
 			tierList: tierListForRequest,
-			userId: this.state.userId
+			userId: this.state.userId,
+			templateTitle: "testTemplateTitle",
+			templateImage: "notanimage",
+			tierListName: "testTierListName",
 		}
 
 		let submitTemplateRequest = {
