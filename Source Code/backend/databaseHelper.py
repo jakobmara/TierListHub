@@ -230,7 +230,7 @@ def getTierLists(userID=None, templateID = None) -> array:
 
 
 def getTemplates(userID) -> array:
-    conn = sqlite3.connect()
+    conn = sqlite3.connect(DBNAME)
     cur = conn.cursor()
 
     sql = '''SELECT * FROM templates WHERE userID = ? '''
@@ -255,6 +255,37 @@ def insertUser(name, password):
     cur.close()
     conn.close()
     
+def userExists(name):
+    conn = sqlite3.connect(DBNAME)
+    cur = conn.cursor()
+
+    sql = '''SELECT * FROM users WHERE username = ? '''
+
+    data = [name]
+    cur.execute(sql,data)
+    user = cur.fetchall()
+    cur.close()
+
+    conn.close()
+    return len(user) != 0
+
+def userLogin(name,password):
+    conn = sqlite3.connect(DBNAME)
+    cur = conn.cursor()
+
+    newPass = hashlib.sha1(password.encode('utf-8')).hexdigest()
+    print(f"username: {name} password: {newPass}")
+    sql = '''SELECT * FROM users WHERE username = ? AND password = ? '''
+    data = [name,newPass]
+
+    cur.execute(sql,data)
+
+    user = cur.fetchall()
+
+    cur.close()
+    conn.close()
+    return len(user) == 1
+
 
 def insertTemplate(userID, title, labels, dispmage):
     conn = sqlite3.connect(DBNAME)

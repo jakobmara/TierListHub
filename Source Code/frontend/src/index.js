@@ -1,12 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import CreateTierList from './CreateTierList';
+import CreateTierList from './components/CreateTierList';
+import UserSignUp from './components/UserSignUp';
+import UserLogin from './components/Login'
 import reportWebVitals from './reportWebVitals';
-
+import App from './App.js'
 ReactDOM.render(
   <React.StrictMode>
-    <CreateTierList />
+    <App />
   </React.StrictMode>,
   document.getElementById('root')
 );

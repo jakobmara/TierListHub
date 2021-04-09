@@ -1,0 +1,19 @@
+.title{
+    text-align: center;
+}
+body{
+    background-color: #202020;
+    color: white;
+}
+form {
+    text-align: center;
+}
+table{
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+      
+}
+.tableDiv{
+    text-align: center;
+}

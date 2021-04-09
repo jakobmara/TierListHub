@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import './CreateTierList.css';
+import '../CreateTierList.css';
 
 class CreateTierList extends Component {
 
