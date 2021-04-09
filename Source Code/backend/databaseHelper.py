@@ -184,7 +184,7 @@ def updateTierList(userID, tierListID, rankings):
 
 
 # Create template is called when user wants to create a new template 
-def createTemplate(userID, title, labels, titleImage,images) -> int:
+def createTemplate(userID, title, labels, titleImage, images) -> int:
     insertTemplate(userID,title,labels, titleImage)
     
     conn = sqlite3.connect(DBNAME)

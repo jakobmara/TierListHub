@@ -18,19 +18,16 @@ class CreateTierList extends Component {
 
 		this.submitTemplate = this.submitTemplate.bind(this)
 
-		let defaultImg = "https://upload.wikimedia.org/wikipedia/en/a/a9/MarioNSMBUDeluxe.png"
+		let defaultImg = "http://localhost:5000/image"//"https://upload.wikimedia.org/wikipedia/en/a/a9/MarioNSMBUDeluxe.png"
 
 		this.state = {
 			tierlist: [
-				{id: "1", tierName: "S", items: [
-					{id: "1", position: 1, img: defaultImg}, {id: "2", position: 2, img: defaultImg}]
-				},
-				//{id: "2", tierName: "D", items: [
-				//	{id: "3", position: 1, img: defaultImg}, {id: "4", position: 2, img: defaultImg}]
-				//},
-				//{id: "3", tierName: "F", items: [
-				//	{id: "5", position: 1, img: defaultImg}, {id: "6", position: 2, img: defaultImg}]
-				//},
+				{id: "1", tierName: "S", items: []},
+				{id: "2", tierName: "A", items: []},
+				{id: "3", tierName: "B", items: []},
+				{id: "4", tierName: "C", items: []},
+				{id: "5", tierName: "D", items: []},
+				{id: "6", tierName: "F", items: []},
 				{id: "-1", tierName: "Unsorted", items: []}
 			],
 			userId: "1",
@@ -98,42 +95,24 @@ class CreateTierList extends Component {
 			.then(res => this.setState({templateId: res.templateId}))
 	}
 
-	async submitTemplate() {
-		const newTierListState = Promise.all(this.state.tierlist
-			.map(async (tier) => {
-				tier.items.map(async (item) => {
-						const blob = await fetch(item.img).then(r => r.blob()) 
-						var reader = new FileReader();
-						reader.readAsDataURL(blob);
-						reader.onloadend = function () {
-							const b64Img = reader.result
-							item.b64Img = b64Img
-						}
-						return item
-					})
-					return tier
-				}))
-
-		newTierListState.then(tierList => {
-			console.log(tierList)
-			console.log(JSON.stringify(tierList))
-			var imgs = []
-			tierList.forEach(tier => {
-				tier.items.forEach(item => {
-					imgs.push(item.b64Img)
-				})
-			});
-			console.log(imgs)
-			let submitTemplateRequest = {
-				method: 'POST',
-				mode: 'cors',
-				headers: {'Content-Type': 'application/json'},
-				body: JSON.stringify(tierList)
-			}
-	
-			fetch("http://localhost:5000/uploadTemplate", submitTemplateRequest)
+	submitTemplate() {
+		let tierListForRequest = this.state.tierlist.filter((tier) =>{
+			return tier.id !== "-1"
 		})
 
+		let requestBody = {
+			tierList: tierListForRequest,
+			userId: this.state.userId
+		}
+
+		let submitTemplateRequest = {
+			method: 'POST',
+			mode: 'cors',
+			headers: {'Content-Type': 'application/json'},
+			body: JSON.stringify(requestBody)
+		}
+		console.log(submitTemplateRequest)
+		fetch("http://localhost:5000/uploadTemplate", submitTemplateRequest)
 		
 	}
 
@@ -189,7 +168,7 @@ class CreateTierList extends Component {
 	}
 
 
-	addNewTierItem(ev) {
+	async addNewTierItem(ev) {
 		let file = URL.createObjectURL(ev.target.files[0])
 		var maxId = 0
 		for (const tier in this.state.tierlist) {
@@ -200,7 +179,21 @@ class CreateTierList extends Component {
 			}
 		}
 
-		let newItem = {id: String(parseInt(maxId) + 1), position: 99, img: file}
+		const blob = await fetch(file).then(r => r.blob())
+
+		const b64Img = await new Promise((resolve, reject) => {
+						const reader = new FileReader();
+		
+						reader.onloadend = res => {
+							//console.log(res.target.result)
+							resolve(res.target.result);
+						};
+						reader.onerror = err => reject(err);
+					
+						reader.readAsDataURL(blob);
+					});
+		
+		let newItem = {id: String(parseInt(maxId) + 1), position: 99, img: file, b64Img: b64Img}
 
 		const newTierListState = this.state.tierlist.map((tier) => {
 			if (tier.id === "-1") {
