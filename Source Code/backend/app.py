@@ -17,12 +17,13 @@ def getTemplateId():
     resp.status_code = 200
     return resp
 
-@app.route('/uploadImage', methods=["POST"])
+@app.route('/uploadTemplate', methods=["POST"])
 @cross_origin()
-def getTemplateIds():
-    userId = request.args.get('userId')
-    templateId = request.args.get('templateId')
-    image = request.args.get('image')
+def uploadTemplate():
+    print(request.get_json())
+    #userId = request.args.get('userId')
+    #templateId = request.args.get('templateId')
+    #image = request.args.get('image')
     #Create template in DB and return template ID
     resp = jsonify({"templateId": 1})
     resp.status_code = 200

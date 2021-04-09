@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import Tier from './Tier.js'
 import '../CreateTierList.css';
 
 class CreateTierList extends Component {
@@ -6,11 +7,16 @@ class CreateTierList extends Component {
 	constructor(props) {
 		super(props)
 
-		this.handleDrag = this.handleDrag.bind(this);
+		this.tierLabelListener = this.tierLabelListener.bind(this);
+		this.handleDragOnItem = this.handleDragOnItem.bind(this);
 		this.handleDropOnTier = this.handleDropOnTier.bind(this);
-		this.deleteItem = this.deleteItem.bind(this)
 		
+		this.deleteItem = this.deleteItem.bind(this)
 		this.addNewTierItem = this.addNewTierItem.bind(this)
+		this.addNewTier = this.addNewTier.bind(this)
+		this.onDeleteTier = this.onDeleteTier.bind(this)
+
+		this.submitTemplate = this.submitTemplate.bind(this)
 
 		let defaultImg = "https://upload.wikimedia.org/wikipedia/en/a/a9/MarioNSMBUDeluxe.png"
 
@@ -19,22 +25,65 @@ class CreateTierList extends Component {
 				{id: "1", tierName: "S", items: [
 					{id: "1", position: 1, img: defaultImg}, {id: "2", position: 2, img: defaultImg}]
 				},
-				{id: "2", tierName: "D", items: [
-					{id: "3", position: 1, img: defaultImg}, {id: "4", position: 2, img: defaultImg}]
-				},
-				{id: "3", tierName: "F", items: [
-					{id: "5", position: 1, img: defaultImg}, {id: "6", position: 2, img: defaultImg}]
-				},
+				//{id: "2", tierName: "D", items: [
+				//	{id: "3", position: 1, img: defaultImg}, {id: "4", position: 2, img: defaultImg}]
+				//},
+				//{id: "3", tierName: "F", items: [
+				//	{id: "5", position: 1, img: defaultImg}, {id: "6", position: 2, img: defaultImg}]
+				//},
 				{id: "-1", tierName: "Unsorted", items: []}
 			],
 			userId: "1",
+			dragType: "",
 			dragId: "-1",
 			dragTierId: "-1"
 		}
 	}
 
+	render() {
+		return (
+			<div className="CreateTierList">
+				<button onClick={(e) => console.log(this.state)}>Debug</button>
+				<div className="TierListContainer">
+					{this.state.tierlist
+						.sort((a, b) => (a.id > b.id) ? 1 : ((b.id > a.id) ? -1 : 0))
+						.map((tier) => (
+							<Tier
+								id={tier.id}
+								key={tier.id}
+								tierName={tier.tierName}
+								items={tier.items}
+								isEditable={true}
+								tierLabelListener={this.tierLabelListener}
+								onDeleteTier={this.onDeleteTier}
+
+								draggable={true}
+								handleDragOnItem={this.handleDragOnItem}
+								handleDropOnTier={this.handleDropOnTier}
+							/>)
+						)
+					}
+				</div>
+				<div className="AddNewItemContainer">
+					<input 
+						type="file"
+						onChange={this.addNewTierItem}
+					/>
+					<img
+						src="https://static.thenounproject.com/png/1237-200.png"
+						onDragOver={(ev) => ev.preventDefault()}
+						onDrop={this.deleteItem}
+						alt=""
+					/>
+					<button onClick={this.addNewTier}>Add New Tier</button>
+				</div>
+				<button onClick={this.submitTemplate}>Submit Template</button>
+			</div>
+		);
+	}
+
 	componentDidMount() {
-		this.getTemplateId()
+		//this.getTemplateId()
 	}
 
 	getTemplateId() {
@@ -49,21 +98,74 @@ class CreateTierList extends Component {
 			.then(res => this.setState({templateId: res.templateId}))
 	}
 
-	handleDrag(ev) {
+	async submitTemplate() {
+		const newTierListState = Promise.all(this.state.tierlist
+			.map(async (tier) => {
+				tier.items.map(async (item) => {
+						const blob = await fetch(item.img).then(r => r.blob()) 
+						var reader = new FileReader();
+						reader.readAsDataURL(blob);
+						reader.onloadend = function () {
+							const b64Img = reader.result
+							item.b64Img = b64Img
+						}
+						return item
+					})
+					return tier
+				}))
+
+		newTierListState.then(tierList => {
+			console.log(tierList)
+			console.log(JSON.stringify(tierList))
+			var imgs = []
+			tierList.forEach(tier => {
+				tier.items.forEach(item => {
+					imgs.push(item.b64Img)
+				})
+			});
+			console.log(imgs)
+			let submitTemplateRequest = {
+				method: 'POST',
+				mode: 'cors',
+				headers: {'Content-Type': 'application/json'},
+				body: JSON.stringify(tierList)
+			}
+	
+			fetch("http://localhost:5000/uploadTemplate", submitTemplateRequest)
+		})
+
+		
+	}
+
+	handleDragOnItem(ev) {
 		this.setState({
 			dragId: ev.currentTarget.id,
-			dragTierId: ev.currentTarget.parentNode.id
+			dragTierId: ev.currentTarget.parentNode.id,
+			dragType:"item"
 		})
-		console.log("In Drag")
+
+		console.log("In Item Drag")
 		console.log("DragID: " + ev.currentTarget.id)
 		console.log("DragTierID: " + ev.currentTarget.parentNode.id)
 	}
-
 
 	handleDropOnTier(ev) {
 		console.log("Dropped On Tier")
 		console.log("DropTierID: " + ev.currentTarget.id)
 
+		switch(this.state.dragType) {
+			case "item":
+				this.setState({tierlist: this.handleItemDropOnTier(ev)})
+				break
+			case "tier":
+				console.log("Dragged tier on tier")
+				break		
+			default:
+				console.log("Got unknown drag and drop!")	
+		}		
+	  };
+
+	handleItemDropOnTier(ev) {
 		let dragId = this.state.dragId
 		let dragTierId = this.state.dragTierId
 
@@ -82,10 +184,9 @@ class CreateTierList extends Component {
 			}
 			return tier
 		})
-		console.log(newTierListState)
-		
-		this.setState({tierlist: newTierListState})
-	  };
+
+		return newTierListState
+	}
 
 
 	addNewTierItem(ev) {
@@ -113,7 +214,6 @@ class CreateTierList extends Component {
 
 
 	deleteItem(ev) {
-		console.log("Deleting")
 		let dragId = this.state.dragId
 		let dragTierId = this.state.dragTierId
 
@@ -126,90 +226,54 @@ class CreateTierList extends Component {
 			return tier
 		})
 
-		console.log(newTierListState)
 		
 		this.setState({tierlist: newTierListState})
-
-	  }
-
-	render() {
-		return (
-			<div className="CreateTierList">
-				<button onClick={(e) => console.log(this.state)}>Debug</button>
-				<div className="TierListContainer">
-				<div className="Tier">
-						<h1 className="TierLabel"><input></input></h1>
-						<div className="TierContainer"></div>
-				</div>
-
-					{this.state.tierlist.map((tier) => (
-						<Tier
-							id={tier.id}
-							tierName={tier.tierName}
-							items={tier.items}
-							handleDrag={this.handleDrag}
-							handleDropOnTier={this.handleDropOnTier}
-						/>)
-					)}
-				</div>
-				<div className="AddNewItemContainer">
-					<input 
-						type="file"
-						name="file"
-						onChange={this.addNewTierItem}
-					/>
-					<img
-						src="https://static.thenounproject.com/png/1237-200.png"
-						onDragOver={(ev) => ev.preventDefault()}
-						onDrop={(ev) => this.deleteItem(ev)}
-						alt=""
-					/>
-				</div>
-			</div>
-		);
 	}
-}
+
+	addNewTier(ev) {
+		var maxId = 0
+		for (const tier in this.state.tierlist) {
+			if (this.state.tierlist[tier].id > maxId) {
+				maxId = this.state.tierlist[tier].id
+			}
+		}
+
+		let newTier = {id: String(parseInt(maxId) + 1), position: 99, items: []}
+
+		var newTierListState = this.state.tierlist
+		newTierListState.push(newTier)
+
+		this.setState({tierlist: newTierListState})
+	}
+
+	onDeleteTier(ev) {
+		let deleteTierId = ev.target.parentNode.id
+
+		var newTierListState = this.state.tierlist.slice()
+		newTierListState.splice(newTierListState.findIndex((tier) => tier.id === deleteTierId), 1)
+
+		let itemsInDeletedTier = this.state.tierlist.find((tier) => tier.id === deleteTierId).items 
+		let newUnsortedItems = newTierListState.find((tier) => tier.id === "-1").items.concat(itemsInDeletedTier)
+		
+		newTierListState.find((tier) => tier.id === "-1").items = newUnsortedItems
+
+		this.setState({tierlist: newTierListState})
+	}
+
+	tierLabelListener(ev) {
+		let editedTierId = ev.target.parentNode.id
+		let newTierName = ev.target.value
+
+		let newTierListState = this.state.tierlist.map((tier) => {
+			if (tier.id === editedTierId) {
+				tier.tierName = newTierName
+			}
+			return tier
+		})
+
+		this.setState({tierlist: newTierListState})
+	}
 	
-
-const Tier = ({tierName, id, items, handleDrag, handleDropOnItem, handleDropOnTier}) => {
-	return (
-		<div className="Tier" 
-			id={id} 
-			onDrop={handleDropOnTier}
-			onDragOver={(ev) => ev.preventDefault()}>
-			
-			<h1 className="TierLabel">{tierName}</h1>
-			<div className="TierContainer" id={id}>
-				{items.map((tierItem) => (
-					<TierItem
-						id={tierItem.id}
-						position={tierItem.position}
-						tierid={id}
-						handleDrag={handleDrag}
-						handleDrop={handleDropOnItem}
-						img={tierItem.img}
-					/>)
-				)}
-			</div>
-		</div>
-	)
-}
-
-
-const TierItem = ({id, tierid, position, handleDrag, img}) => {
-	return (
-		<img
-			id={id}
-			tierid={tierid}
-			position={position}
-			className="TierItem"
-			src={img}
-			alt=""
-
-			draggable={true}
-			onDragStart={handleDrag}
-		/>
-	)
 }
 
 export default CreateTierList;
