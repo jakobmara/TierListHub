@@ -186,16 +186,16 @@ def updateTierList(userID, tierListID, rankings):
 
 # Create template is called when user wants to create a new template 
 def createTemplate(userID, title, labels, titleImage, images) -> int:
-    insertTemplate(userID,title,labels, titleImage)
+    templateID = insertTemplate(userID,title,labels, titleImage)
     
     conn = sqlite3.connect(DBNAME)
 
     cur = conn.cursor()
     print(f"userID: {userID} template name: {title}")
     # Used to find template ID of newly inserted template
-    sql = f''' SELECT t.uid FROM templates as t WHERE t.userID = ? AND t.name = ? '''
+    sql = f''' SELECT t.uid FROM templates as t WHERE t.userID = ? AND t.uid = ? '''
     
-    data = [userID, title]
+    data = [userID, templateID]
     cur.execute(sql,data)
     templateId = cur.fetchone()[0]
 
@@ -231,17 +231,66 @@ def getTierLists(userID=None, templateID = None) -> array:
     return tierLists
 
 
-def getTemplates(userID) -> array:
+def getTemplatesFromUser(userID) -> array:
     conn = sqlite3.connect(DBNAME)
     cur = conn.cursor()
 
     sql = '''SELECT * FROM templates WHERE userID = ? '''
-    cur.execute(sql)
+    data = [userID]
+    cur.execute(sql,data)
     templates = cur.fetchall()
-    conn.close()
     cur.close()
+
+    conn.close()
     return templates
 
+def getTemplateFromTemplateId(templateId) -> array:
+    conn = sqlite3.connect(DBNAME)
+    cur = conn.cursor()
+
+    sql = '''SELECT * FROM templates WHERE uid = ? '''
+    
+    data = [templateId]
+
+    cur.execute(sql,data)
+    template = cur.fetchone()
+    if template == None:
+        return None
+
+    sql = ''' SELECT imageID FROM images WHERE templateID = ? '''
+
+    data = [template[0]]
+
+    cur.execute(sql,data)
+    images = cur.fetchall()
+
+    template = {
+        "templateId": template[0],
+        "userId": template[1],
+        "templateName": template[2],
+        "labels": template[3],
+        "imageIds": [image[0] for image in images]
+        }
+
+    
+    cur.close()
+    conn.close()
+
+    return template
+
+def getTemplateDisplayImage(templateId):
+    conn = sqlite3.connect(DBNAME)
+    cur = conn.cursor()
+
+    sql = '''SELECT displayImage FROM templates WHERE uid = ? '''
+    data = [templateId]
+    cur.execute(sql,data)
+    displayImage = cur.fetchone()[0]
+    cur.close()
+
+    conn.close()
+    print(displayImage)
+    return displayImage
 
 def insertUser(name, password):
     conn = sqlite3.connect(DBNAME)
@@ -356,6 +405,20 @@ def insertImage(templateId, imageId, image):
     cur.close()
     conn.close()
 
+def getImage(templateId, imageId) -> str:
+    conn = sqlite3.connect(DBNAME)
+    cur = conn.cursor()
+
+    sql = '''SELECT image FROM images WHERE templateID = ? AND imageID = ? '''
+
+    data = [templateId, imageId]
+    cur.execute(sql, data)
+    img = cur.fetchone()[0]
+    cur.close()
+    conn.close()
+    print(f"img: {img}")
+
+    return img
 
 def createTemplateFromJson(jsonObject) -> int:
     userId = jsonObject['userId']  

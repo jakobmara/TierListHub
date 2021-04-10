@@ -1,14 +1,10 @@
 import { Component } from 'react';
-import React, { useState } from "react";
-import '../UserSignUp.css';
+import React from "react";
+import '../css/UserSignUp.css';
 import {
-    BrowserRouter as Router,
-    Switch,
     Route,
-    Link,
-    Redirect,
-    useHistory,
-    useLocation
+    Redirect
+
   } from "react-router-dom";
 
 class UserSignUp extends Component {
@@ -40,7 +36,7 @@ class UserSignUp extends Component {
     }
 
     setConfirmation(e){
-        this.state.confirmation = e
+        this.setState({confirmation: e})
     }
 
     confirmPassword(){
@@ -105,7 +101,6 @@ class UserSignUp extends Component {
     handleRedirect(){
         console.log("REDIRECTING");
         let loggedIn = true;
-        
     }
 
     render() {
@@ -115,7 +110,7 @@ class UserSignUp extends Component {
             <div className="body">
                 <div className ="title">
                     <h1>User Sign up</h1>
-                    <img src="https://i.imgur.com/J5hmVvj.png"/>
+                    <img alt="" src="https://i.imgur.com/J5hmVvj.png"/>
                 
                 <br/>
                 

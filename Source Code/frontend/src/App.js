@@ -1,20 +1,15 @@
-import './App.css';
+import './css/App.css';
 import { Component } from 'react';
 
 import {
   BrowserRouter as Router,
   Switch,
-  Route,
-  Link,
-  Redirect,
-  useHistory,
-  useLocation
+  Route
 } from "react-router-dom";
 
-import CreateTierList from './components/CreateTierList';
+import CreateTemplate from './components/CreateTemplate';
 import UserSignUp from './components/UserSignUp';
 import UserLogin from './components/Login'
-import reportWebVitals from './reportWebVitals';
 import Home from "./components/home"
 
 class App extends Component {
@@ -29,7 +24,7 @@ class App extends Component {
         <UserLogin/>
         </Route>
         <Route exact path="/createTemplate">
-        <CreateTierList/>
+        <CreateTemplate/>
         </Route>
         <Route path="/" >
         <Home/>

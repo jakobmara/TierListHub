@@ -1,8 +1,8 @@
 import { Component } from 'react';
 import Tier from './Tier.js'
-import '../CreateTierList.css';
+import '../css/CreateTemplate.css';
 
-class CreateTierList extends Component {
+class CreateTemplate extends Component {
 
 	constructor(props) {
 		super(props)
@@ -17,8 +17,6 @@ class CreateTierList extends Component {
 		this.onDeleteTier = this.onDeleteTier.bind(this)
 
 		this.submitTemplate = this.submitTemplate.bind(this)
-
-		let defaultImg = "http://localhost:5000/image"//"https://upload.wikimedia.org/wikipedia/en/a/a9/MarioNSMBUDeluxe.png"
 
 		this.state = {
 			tierlist: [
@@ -272,4 +270,4 @@ class CreateTierList extends Component {
 	
 }
 
-export default CreateTierList;
+export default CreateTemplate;

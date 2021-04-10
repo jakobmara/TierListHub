@@ -1,13 +1,8 @@
 import { Component } from 'react';
-import React, { useState } from "react";
+import React from "react";
 import {
-    BrowserRouter as Router,
-    Switch,
-    Route,
-    Link,
-    Redirect,
-    useHistory,
-    useLocation
+    Redirect
+
   } from "react-router-dom";
 
 class UserLogin extends Component {
@@ -80,7 +75,7 @@ class UserLogin extends Component {
             <div className="body">
                 <div className ="title">
                     <h1>User Login</h1>
-                    <img src="https://i.imgur.com/J5hmVvj.png"/>
+                    <img alt="" src="https://i.imgur.com/J5hmVvj.png"/>
                 
                 <br/>
                 

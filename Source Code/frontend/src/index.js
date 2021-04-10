@@ -1,9 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import CreateTierList from './components/CreateTierList';
-import UserSignUp from './components/UserSignUp';
-import UserLogin from './components/Login'
+import './css/index.css';
 import reportWebVitals from './reportWebVitals';
 import App from './App.js'
 ReactDOM.render(

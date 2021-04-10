@@ -1,15 +1,10 @@
 import { Component } from 'react';
-import React, { useState } from "react";
-import '../home.css';
+import React from "react";
+import '../css/home.css';
 
 import {
-    BrowserRouter as Router,
-    Switch,
-    Route,
-    Link,
-    Redirect,
-    useHistory,
-    useLocation
+    Redirect
+
   } from "react-router-dom";
 
 class Home extends Component{
@@ -39,7 +34,7 @@ class Home extends Component{
             <div className="body">
                 <div className="navBar">
                 <div className ="title">
-                    <img className="logo"  src="https://i.imgur.com/J5hmVvj.png"/>
+                    <img alt="" className="logo"  src="https://i.imgur.com/J5hmVvj.png"/>
                 <button className ="login-btn"onClick={this.pressedSignup}>sign up</button>
                 <button className="login-btn"onClick={this.pressedLogin}>Login</button>
                 </div>
