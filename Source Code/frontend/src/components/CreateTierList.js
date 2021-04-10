@@ -75,9 +75,20 @@ class CreateTierList extends Component {
 
 	submitTierList() {
 		if (this.state.tierlist.find(tier => tier.id === "-1").items.length !== 0) {
-			alert("hi")
+			alert("All items must be sorted before submitting a Tierlist")
 			return
 		}
+
+		let tierListName = prompt("Tierlist Title:")
+		if (tierListName === "") {
+			alert("A title must be provided to submit a Tierlist")
+			console.log("Got empty name")
+			return	
+		} else if (tierListName) {
+			console.log("Canceled submission")
+			return
+		}
+
 		let tierListForRequest = this.state.tierlist.filter((tier) =>{
 			return tier.id !== "-1"
 		})
@@ -86,7 +97,7 @@ class CreateTierList extends Component {
 			tierList: tierListForRequest,
 			userId: this.state.userId,
 			templateId: this.state.templateId,
-			tierListName: "testTierListName",
+			tierListName: tierListName,
 		}
 
 		let submitTemplateRequest = {

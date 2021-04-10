@@ -1,5 +1,6 @@
 import { Component } from 'react';
 import Tier from './Tier.js'
+import TemplateDialogForm from './TemplateDialogForm'
 import '../css/CreateTemplate.css';
 
 class CreateTemplate extends Component {
@@ -39,6 +40,7 @@ class CreateTemplate extends Component {
 		return (
 			<div className="CreateTierList">
 				<button onClick={(e) => console.log(this.state)}>Debug</button>
+				
 				<div className="TierListContainer">
 					{this.state.tierlist
 						.sort((a, b) => (a.id > b.id) ? 1 : ((b.id > a.id) ? -1 : 0))
@@ -72,28 +74,20 @@ class CreateTemplate extends Component {
 					/>
 					<button onClick={this.addNewTier}>Add New Tier</button>
 				</div>
-				<button onClick={this.submitTemplate}>Submit Template</button>
+				<TemplateDialogForm submitTemplate={this.submitTemplate}/>
 			</div>
 		);
 	}
 
-	componentDidMount() {
-		//this.getTemplateId()
-	}
 
-	getTemplateId() {
-		let getTemplateRequest = {
-			method: 'GET',
-			mode: 'cors',
-			cache: 'default',
-		}
-		
-		fetch("http://localhost:5000/getTemplateId?userId=" + this.state.userId, getTemplateRequest)
-			.then(res => res.json())
-			.then(res => this.setState({templateId: res.templateId}))
-	}
+	submitTemplate(dialogFormState) {
 
-	submitTemplate() {
+		let templateTitle = dialogFormState.templateName
+		let tierListName = dialogFormState.tierListName
+		let templateImage = dialogFormState.thumbnailBlob
+
+
+
 		let tierListForRequest = this.state.tierlist.filter((tier) =>{
 			return tier.id !== "-1"
 		})
@@ -101,9 +95,10 @@ class CreateTemplate extends Component {
 		let requestBody = {
 			tierList: tierListForRequest,
 			userId: this.state.userId,
-			templateTitle: "testTemplateTitle",
-			templateImage: "notanimage",
-			tierListName: "testTierListName",
+			templateTitle: templateTitle,
+			templateImage: templateImage,
+			tierListName: tierListName,
+
 		}
 
 		let submitTemplateRequest = {
@@ -116,6 +111,7 @@ class CreateTemplate extends Component {
 		fetch("http://localhost:5000/uploadTemplate", submitTemplateRequest)
 		
 	}
+
 
 	handleDragOnItem(ev) {
 		this.setState({
@@ -186,7 +182,6 @@ class CreateTemplate extends Component {
 						const reader = new FileReader();
 		
 						reader.onloadend = res => {
-							//console.log(res.target.result)
 							resolve(res.target.result);
 						};
 						reader.onerror = err => reject(err);
