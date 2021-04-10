@@ -2,6 +2,7 @@ import { Component } from 'react';
 import Tier from './Tier.js'
 import TemplateDialogForm from './TemplateDialogForm'
 import '../css/CreateTemplate.css';
+import Navbar from './Navbar';
 
 class CreateTemplate extends Component {
 
@@ -39,6 +40,8 @@ class CreateTemplate extends Component {
 	render() {
 		return (
 			<div className="CreateTierList">
+				<Navbar></Navbar>
+
 				<button onClick={(e) => console.log(this.state)}>Debug</button>
 				
 				<div className="TierListContainer">

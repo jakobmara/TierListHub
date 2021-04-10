@@ -1,47 +1,45 @@
 import { Component } from 'react';
 import React from "react";
 import '../css/home.css';
-
+import Navbar from './Navbar';
 import {
-    Redirect
+    Redirect,
+    useHistory
 
   } from "react-router-dom";
-
 class Home extends Component{
 
-    constructor(props){
-        super(props)
-        this.pressedLogin = this.pressedLogin.bind(this)
-        this.pressedSignup = this.pressedSignup.bind(this)
-        this.state = {redirect : null, userID: null}
+    constructor(props){  
+        super(props);
+        console.log("IN HOME CONSTRUCTOR")
+        console.log(this.props.location)
+
+        if (this.props.location.state == undefined || this.props.location.state.userID == undefined){
+            this.state = {redirect : null, userID: null}
+        
+        } else {
+            this.state = {redirect : null, userID: this.props.location.state.userID}
+            console.log("props location in home: ", this.props.location.state)   
+        }
+        
+        this.onLogOut = this.onLogOut.bind(this);
     }
 
-    pressedLogin(){
-        console.log("logging in")
-        this.setState({redirect:"/login"})
-    }
-    pressedSignup(){
-        console.log("signing up")
-        this.setState({redirect:"/signup"})
+    onLogOut(){
+        console.log("IN home logging out")
+        this.setState({userID:null})
+        window.history.replaceState({}, document.title)
     }
 
     render(){
         if (this.state.redirect){
             return <Redirect to={this.state.redirect}/>
         }
+        console.log("USER ID IN HOME: ", this.state.userID)
         return (
-            <div>
-            <div className="body">
-                <div className="navBar">
-                <div className ="title">
-                    <img alt="" className="logo"  src="https://i.imgur.com/J5hmVvj.png"/>
-                <button className ="login-btn"onClick={this.pressedSignup}>sign up</button>
-                <button className="login-btn"onClick={this.pressedLogin}>Login</button>
-                </div>
-                </div>
-                
+            <div >
+                <Navbar userID={this.state.userID} onLogOut={this.onLogOut}>  </Navbar>   
             GALLERY
-            </div>
             </div>
 
         );

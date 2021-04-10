@@ -21,12 +21,14 @@ def addUser():
     if userNameExists(user):
         print("user already ")
         resp = jsonify({"errorMessage": "username already exists"})
+        resp.status_code = 404
+
     else:
         print("sucessfully added")
         insertUser(user,password)
-        resp = jsonify({"errorMessage": "no errors"})
-
-    resp.status_code = 200
+        newUserID = getUidFromLogin(user,password)
+        resp = jsonify({"errorMessage": "no errors", "userID":newUserID})
+        resp.status_code = 200
     return resp
 
 
@@ -41,9 +43,14 @@ def userLogin():
     if uID != -1:
         print("Sucessfully logged in ")
         resp = jsonify({"errorMessage": "no errors", "userID": uID})
+        resp.status_code = 200
+
     else:
         print("invalid password or username")
         resp = jsonify({"errorMessage": "invalid password or username"})
+        resp.status_code = 404
+
+   
     return resp
 
     
@@ -127,3 +134,12 @@ def uploadTierlist():
         return resp
 
     return "Bad Request", 400
+@app.route('/getUsername/<userID>', methods =['GET'])
+@cross_origin()
+def getUserNameFromId(userID):
+    name = getUserName(userID)
+
+    resp = jsonify({"userName": name})
+    resp.status_code = 200
+    print(resp)
+    return resp 

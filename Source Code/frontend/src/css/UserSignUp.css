@@ -17,3 +17,10 @@ table{
 .tableDiv{
     text-align: center;
 }
+#navigation{
+    top:auto;
+    background-color: red;
+}
+h1{
+    margin-top: 0;
+}

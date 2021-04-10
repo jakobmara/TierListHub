@@ -362,8 +362,6 @@ def getUidFromLogin(name, password):
     cur.execute(sql,data)
 
     user = cur.fetchall()
-
-    print(user[0])
     cur.close()
     conn.close()
     if len(user) == 0:
@@ -372,6 +370,18 @@ def getUidFromLogin(name, password):
         userID = user[0][0]
     return userID
 
+def getUserName(userId):
+    conn = sqlite3.connect(DBNAME)
+    cur = conn.cursor()
+    sql = ''' SELECT username FROM users WHERE uid = ?'''
+
+    data = [userId]
+    cur.execute(sql,data)
+    name = cur.fetchone()[0]
+    cur.close()
+    conn.close()
+
+    return name
 
 def insertTemplate(userID, title, labels, dispmage) -> int:
     conn = sqlite3.connect(DBNAME)
