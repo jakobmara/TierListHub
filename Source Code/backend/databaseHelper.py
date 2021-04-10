@@ -306,6 +306,22 @@ def insertUser(name, password):
     cur.close()
     conn.close()
 
+
+def templateIdExists(tId):
+    conn = sqlite3.connect(DBNAME)
+    cur = conn.cursor()
+
+    sql = '''SELECT * FROM templates WHERE uid = ? '''
+
+    data = [tId]
+    cur.execute(sql, data)
+    user = cur.fetchall()
+    cur.close()
+
+    conn.close()
+    return len(user) != 0
+
+
 def userIdExists(uid):
     conn = sqlite3.connect(DBNAME)
     cur = conn.cursor()

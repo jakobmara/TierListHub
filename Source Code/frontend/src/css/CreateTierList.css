@@ -1,0 +1,59 @@
+.CreateTierList {
+  background-color: #202020;
+  color: white;
+  text-align: center;
+  height: 100%;
+  margin: 0;
+  
+}
+
+.MoveableImage {
+  position: absolute;
+  background-color: aqua;
+  
+}
+
+.TierListContainer {
+  background-color: #363636;
+  text-align: left;
+  margin-left: 15%;
+  margin-right: 15%;
+}
+
+.TierListUnsortedContainer {
+  background-color: #282828;
+  margin-left: 15%;
+  margin-right: 15%;
+
+  border: #404040;
+  border-style: solid;
+  border-radius: 5px;
+}
+
+.Tier {
+  border: #505050;
+  border-style: solid;
+  border-radius: 5px;
+  display: flex;
+}
+
+.TierLabel {
+  text-align: center;
+  flex: content;
+  height: 100%;
+  border: #505050;
+  border-radius: 3px;
+  border-style: solid;
+}
+
+.TierItem {
+  width: 64px;
+  height: 64px;
+}
+
+.AddNewItemContainer {
+  text-align: center;
+  display: flex;
+  margin-left: 15%;
+  margin-right: 15%;
+}

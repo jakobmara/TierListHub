@@ -8,6 +8,7 @@ import {
 } from "react-router-dom";
 
 import CreateTemplate from './components/CreateTemplate';
+import CreateTierList from './components/CreateTierList';
 import UserSignUp from './components/UserSignUp';
 import UserLogin from './components/Login'
 import Home from "./components/home"
@@ -18,21 +19,21 @@ class App extends Component {
       <Switch>
 
         <Route exact path="/signup">
-        <UserSignUp/>
+          <UserSignUp/>
         </Route>
         <Route exact path="/login">
-        <UserLogin/>
+          <UserLogin/>
         </Route>
         <Route exact path="/createTemplate">
-        <CreateTemplate/>
+          <CreateTemplate/>
+        </Route>
+        <Route exact path="/createTierlist">
+          <CreateTierList/>
         </Route>
         <Route path="/" >
-        <Home/>
+          <Home/>
         </Route>
-
-
       </Switch>
-
     </Router>
   }
 }
