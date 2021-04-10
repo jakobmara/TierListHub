@@ -1,35 +1,36 @@
 import { Component } from 'react';
 import React from "react";
+import Navbar from './Navbar';
 import {
+    BrowserRouter as Router,
     Redirect
-
   } from "react-router-dom";
+
 
 class UserLogin extends Component {
     constructor (props){
         super(props)
-        this.state = {username: '', password:'', errorMessage: '', redirect: null}
+        this.state = {username: '', password:'', errorMessage: '', redirect: null, userID : null}
         this.validLogin = this.validLogin.bind(this)
         this.handleLogin = this.handleLogin.bind(this)
-
+        this.setUsername = this.setUsername.bind(this)
+        this.setPassword = this.setPassword.bind(this)
+        
     }
 
     setUsername(e){
-        this.setState({username:e})
-        console.log("username: " + e)
+        this.setState({username:e.target.value})
+        console.log("username: " + e.target.value)
     }
 
     setPassword(e){
-        this.setState({password:e})
-
-        console.log("password: " + e)
+        this.setState({password:e.target.value})
+        console.log("password: " + e.target.value)
     }
 
 
     validLogin(){
         return (this.state.username.length > 0 && this.state.password.length > 0)
-            
-        
     }
 
     handleLogin(e){
@@ -50,29 +51,34 @@ class UserLogin extends Component {
             })
             .then(json => {
                 console.log(json)
-                if (json.errorMessage === "incorrect password or username"){
+                console.log("userID: " + json.userID)
+                if (json.errorMessage === "invalid password or username"){
                     this.setState({errorMessage: json.errorMessage})
                 }else{
-                    this.setState({errorMessage : ""})
-                    this.setState({redirect: "/"});
-
+                    this.setState({errorMessage: ""})
+                    this.setState({userID: json.userID})
+                    this.setState({redirect: "/"});                   
                 }
-
-            })
-            
-    } 
-        
+            })  
+        }     
     }
-
-
 
     render(){
         if (this.state.redirect){          
-            return <Redirect to={this.state.redirect}/>
+           
+            return <Redirect 
+            to={{
+                pathname : this.state.redirect,
+                state: {userID : this.state.userID},
+            }}
+            />
         }
+        
         return (
             
-            <div className="body">
+            <div>
+                <Navbar></Navbar>
+
                 <div className ="title">
                     <h1>User Login</h1>
                     <img alt="" src="https://i.imgur.com/J5hmVvj.png"/>
@@ -87,11 +93,11 @@ class UserLogin extends Component {
                         <tbody>
                     <tr>
                         <td>Username: </td>
-                        <td><input id="userName" placeholder="Username" onChange={(e) => this.setUsername(e.target.value)}/></td>
+                        <td><input id="userName" placeholder="Username" onChange={this.setUsername}/></td>
                     </tr>
                     <tr>
                         <td>Password:  </td>
-                        <td> <input id="password" placeholder="Password" onChange= {(e) => this.setPassword(e.target.value)} type="Password"/> </td>
+                        <td> <input id="password" placeholder="Password" onChange= {this.setPassword} type="Password"/> </td>
                     </tr>
                     </tbody>
                     </table>

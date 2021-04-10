@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import React from "react";
 import '../css/home.css';
-
+import Navbar from './Navbar';
 import {
     Redirect
 
@@ -9,20 +9,17 @@ import {
 
 class Home extends Component{
 
-    constructor(props){
-        super(props)
-        this.pressedLogin = this.pressedLogin.bind(this)
-        this.pressedSignup = this.pressedSignup.bind(this)
-        this.state = {redirect : null, userID: null}
-    }
+    constructor(props){  
+        super(props);
+        if (this.props.location.state.userID == undefined){
+            this.state = {redirect : null, userID: null}
+        }else{
+            this.state = {redirect : null, userID: this.props.location.state.userID}
+        }
 
-    pressedLogin(){
-        console.log("logging in")
-        this.setState({redirect:"/login"})
-    }
-    pressedSignup(){
-        console.log("signing up")
-        this.setState({redirect:"/signup"})
+        console.log("MY PROPS",this.props)
+        console.log("CONSTRUCTING homepage, userID: " + this.state.userID)
+        console.log("MY THIS: ",this)
     }
 
     render(){
@@ -30,18 +27,10 @@ class Home extends Component{
             return <Redirect to={this.state.redirect}/>
         }
         return (
-            <div>
-            <div className="body">
-                <div className="navBar">
-                <div className ="title">
-                    <img alt="" className="logo"  src="https://i.imgur.com/J5hmVvj.png"/>
-                <button className ="login-btn"onClick={this.pressedSignup}>sign up</button>
-                <button className="login-btn"onClick={this.pressedLogin}>Login</button>
-                </div>
-                </div>
+            <div >
+                <Navbar userID={this.state.userID}>  </Navbar>
                 
             GALLERY
-            </div>
             </div>
 
         );

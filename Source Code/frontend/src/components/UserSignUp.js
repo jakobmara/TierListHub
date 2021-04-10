@@ -1,6 +1,8 @@
 import { Component } from 'react';
 import React from "react";
 import '../css/UserSignUp.css';
+import Navbar from './Navbar';
+
 import {
     Route,
     Redirect
@@ -14,7 +16,9 @@ class UserSignUp extends Component {
         this.registerLogin = this.registerLogin.bind(this)
         this.confirmPassword = this.confirmPassword.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
-        this.handleRedirect = this.handleRedirect.bind(this)
+        this.setUsername = this.setUsername.bind(this)
+        this.setPassword = this.setPassword.bind(this)
+        this.setConfirmation = this.setConfirmation.bind(this)
         console.log("CONSTRUCTING")
     }
 
@@ -25,18 +29,18 @@ class UserSignUp extends Component {
         return this.state.password.length > 0 && this.state.username.length > 0
     }
     setUsername(e){
-        this.setState({username:e})
-        console.log("username: " + e)
+        this.setState({username:e.target.value})
+        console.log("username: " + e.target.value)
     }
 
     setPassword(e){
-        this.setState({password:e})
+        this.setState({password:e.target.value})
 
-        console.log("password: " + e)
+        console.log("password: " + e.target.value)
     }
 
     setConfirmation(e){
-        this.setState({confirmation: e})
+        this.setState({confirmation: e.target.value})
     }
 
     confirmPassword(){
@@ -87,27 +91,27 @@ class UserSignUp extends Component {
                 }else{
                     this.setState({errorMessage : ""})
                     this.setState({redirect: true})
-                    this.handleRedirect();
-                    <Route exact path="/" render={() => (<Redirect to="/CreateTierList" />)} />          
-
                 }
-
-            })
-            
-            
+            }) 
         }
     }
 
-    handleRedirect(){
-        console.log("REDIRECTING");
-        let loggedIn = true;
-    }
+
 
     render() {
-        
+        if (this.state.redirect){
+            return <Redirect to={{
+                pathname : this.state.redirect,
+                state: {userID : 99}
+            }}
+            />
+        }
         return (
             
-            <div className="body">
+            <div >
+                <div id="navigation">
+                <Navbar></Navbar>
+                </div>
                 <div className ="title">
                     <h1>User Sign up</h1>
                     <img alt="" src="https://i.imgur.com/J5hmVvj.png"/>
@@ -122,15 +126,15 @@ class UserSignUp extends Component {
                         <tbody>
                     <tr>
                         <td>Username: </td>
-                        <td><input id="userName" placeholder="Username" onChange={(e) => this.setUsername(e.target.value)}/></td>
+                        <td><input id="userName" placeholder="Username" onChange={this.setUsername}/></td>
                     </tr>
                     <tr>
                         <td>Password:  </td>
-                        <td> <input id="password" placeholder="Password" onChange= {(e) => this.setPassword(e.target.value)} type="Password"/> </td>
+                        <td> <input id="password" placeholder="Password" onChange= {this.setPassword} type="Password"/> </td>
                     </tr>
                     <tr>
                         <td>Password Confirmation:</td>
-                        <td> <input  id="confirm"  placeholder="Confirm password" onChange= {(e) => this.setConfirmation(e.target.value)} type="Password"/> </td>
+                        <td> <input  id="confirm"  placeholder="Confirm password" onChange= {this.setConfirmation} type="Password"/> </td>
                     </tr>
                     </tbody>
                     </table>
