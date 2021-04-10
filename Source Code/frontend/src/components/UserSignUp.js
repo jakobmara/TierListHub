@@ -12,7 +12,14 @@ import {
 class UserSignUp extends Component {
     constructor (props){
         super(props)
-        this.state = {username: '', password:'', confirmation: '', errorMessage: '', redirect: false}
+        this.state = {
+            username: '', 
+            password:'', 
+            confirmation: '', 
+            errorMessage: '', 
+            redirect: false, 
+            userID : null
+        }
         this.registerLogin = this.registerLogin.bind(this)
         this.confirmPassword = this.confirmPassword.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
@@ -90,6 +97,7 @@ class UserSignUp extends Component {
                     this.setState({errorMessage: json.errorMessage})
                 }else{
                     this.setState({errorMessage : ""})
+                    this.setState({userID : json.userID})
                     this.setState({redirect: true})
                 }
             }) 
@@ -101,8 +109,8 @@ class UserSignUp extends Component {
     render() {
         if (this.state.redirect){
             return <Redirect to={{
-                pathname : this.state.redirect,
-                state: {userID : 99}
+                pathname : "/",
+                state: {userID : this.state.userID}
             }}
             />
         }
@@ -111,7 +119,7 @@ class UserSignUp extends Component {
             <div >
                 <div id="navigation">
                 <Navbar></Navbar>
-                </div>
+            </div>
                 <div className ="title">
                     <h1>User Sign up</h1>
                     <img alt="" src="https://i.imgur.com/J5hmVvj.png"/>

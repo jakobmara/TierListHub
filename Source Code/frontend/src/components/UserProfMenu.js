@@ -3,6 +3,7 @@ import React from "react";
 import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
+import { Redirect } from 'react-router-dom';
 
 
 class UserProfileMenu extends Component{
@@ -17,7 +18,8 @@ class UserProfileMenu extends Component{
             userID : this.props.userID,
             anchorEl: null, 
             menuOpen: false,
-            username: null
+            username: null,
+            redirect: null
         }
 
     }
@@ -28,18 +30,25 @@ class UserProfileMenu extends Component{
         this.setState({username : responseJson.userName})
     }
 
-    handleClick(event){
+    handleClick(event) {
         console.log("CLICK?")
+        console.log(event.currentTarget)
         this.setState({anchorEl: event.currentTarget})
         this.setState({menuOpen : true})
-      };
+    };
 
     
-    handleClose(){
+    handleClose(event){
+        console.log(event.currentTarget.id)
+        if (event.currentTarget.id == "Logout"){
+            console.log("logged out")
+            this.setState({ userID : null})
+            this.props.onLogOut()
+        }
         this.setState({anchorEl: null})
         this.setState({menuOpen : false})
 
-      };
+    };
 
     render() {
         return (
@@ -55,7 +64,7 @@ class UserProfileMenu extends Component{
                     onClose={this.handleClose}
                 >
                     <MenuItem onClick={this.handleClose}>My account</MenuItem>
-                    <MenuItem onClick={this.handleClose}>Logout</MenuItem>
+                    <MenuItem onClick={this.handleClose} id="Logout" >Logout</MenuItem>
                 </Menu>
             </div>
         );

@@ -27,7 +27,7 @@ def addUser():
         print("sucessfully added")
         insertUser(user,password)
         newUserID = getUidFromLogin(user,password)
-        resp = jsonify({"errorMessage": "no errors", "UserID":newUserID})
+        resp = jsonify({"errorMessage": "no errors", "userID":newUserID})
         resp.status_code = 200
     return resp
 
