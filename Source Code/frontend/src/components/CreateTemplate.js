@@ -22,6 +22,8 @@ class CreateTemplate extends Component {
 
 		this.submitTemplate = this.submitTemplate.bind(this)
 
+		console.log(this.props)
+
 		this.state = {
 			tierlist: [
 				{id: "1", tierName: "S", items: []},
@@ -128,6 +130,14 @@ class CreateTemplate extends Component {
 		}
 		console.log(submitTemplateRequest)
 		fetch("http://localhost:5000/uploadTemplate", submitTemplateRequest)
+		.then((r) => {
+			if (r.ok) {
+				alert("Template submitted succesfully")
+				this.setState({ redirect: "/"})
+			} else {
+				alert("Error submitting template")
+			}
+		})
 		
 	}
 
