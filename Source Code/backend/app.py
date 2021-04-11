@@ -25,9 +25,9 @@ def addUser():
 
     else:
         print("sucessfully added")
-        insertUser(user,password)
-        newUserID = getUidFromLogin(user,password)
-        resp = jsonify({"errorMessage": "no errors", "userID":newUserID})
+        insertUser(user, password)
+        newuserId = getUidFromLogin(user,password)
+        resp = jsonify({"errorMessage": "no errors", "userId": newuserId})
         resp.status_code = 200
     return resp
 
@@ -42,7 +42,7 @@ def userLogin():
     uID = getUidFromLogin(user, password)
     if uID != -1:
         print("Sucessfully logged in ")
-        resp = jsonify({"errorMessage": "no errors", "userID": uID})
+        resp = jsonify({"errorMessage": "no errors", "userId": uID})
         resp.status_code = 200
 
     else:
@@ -61,7 +61,6 @@ TEMP_IMG = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAY8AAABdCAMAAABqxRpFAA
 @cross_origin()
 def uploadTemplate():
     request_json = request.get_json()
-
     if request_json is not None:
         userId = request_json['userId']
         if userIdExists(userId):
@@ -134,12 +133,49 @@ def uploadTierlist():
         return resp
 
     return "Bad Request", 400
-@app.route('/getUsername/<userID>', methods =['GET'])
+@app.route('/getUsername/<userId>', methods =['GET'])
 @cross_origin()
-def getUserNameFromId(userID):
-    name = getUserName(userID)
+def getUserNameFromId(userId):
+    name = getUserName(userId)
 
     resp = jsonify({"userName": name})
     resp.status_code = 200
     print(resp)
     return resp 
+
+@app.route('/templates', methods =["GET"])
+@cross_origin()
+def getTemplates():
+    print(request.args)
+    pageNum = int(request.args.get('page'))
+    pageSize = int(request.args.get('size'))
+    templates = getTemplatePage(pageNum,pageSize)
+
+    formatted_templates = [{
+        "id" : template[0],
+        "title" : template[2],
+        "img" : url_for('getTemplateImage', templateId=template[0] , _external=True),
+        "author": getUserName(template[1])
+    } for template in templates]
+
+    resp = jsonify(formatted_templates)
+    resp.status_code = 200
+    return resp
+
+@app.route('/tierLists', methods =["GET"])
+@cross_origin()
+def getTierLists():
+    print(request.args)
+    tempId = int(request.args.get('templateId'))
+    lists = getTierListFromTemplate(tempId)
+
+    formatted_lists = [{
+        "id" : l[0],
+        "title" : l[4],
+        "img" : url_for('getTemplateImage', templateId=l[2] , _external=True),
+        "author": getUserName(l[1])
+    } for l in lists]
+
+    resp = jsonify(formatted_lists)
+    resp.status_code = 200
+    return resp

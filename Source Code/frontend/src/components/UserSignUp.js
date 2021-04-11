@@ -18,7 +18,7 @@ class UserSignUp extends Component {
             confirmation: '', 
             errorMessage: '', 
             redirect: false, 
-            userID : null
+            userId : null
         }
         this.registerLogin = this.registerLogin.bind(this)
         this.confirmPassword = this.confirmPassword.bind(this)
@@ -31,8 +31,8 @@ class UserSignUp extends Component {
 
 
     
-    validateLogin(){
-        console.log('validiting login')
+    valIdateLogin(){
+        console.log('valIditing login')
         return this.state.password.length > 0 && this.state.username.length > 0
     }
     setUsername(e){
@@ -56,7 +56,7 @@ class UserSignUp extends Component {
 
     registerLogin(){
         console.log("DO SOMETHING")
-        if (this.validateLogin()){
+        if (this.valIdateLogin()){
             if (this.confirmPassword()){
                 //submit the info to backend
                 console.log("sent info to backend")
@@ -69,7 +69,7 @@ class UserSignUp extends Component {
 
             }
         }else{
-            console.log("didn't pass check")
+            console.log("dIdn't pass check")
             this.setState({errorMessage: "Please fill out all fields"})
             return false
         }
@@ -97,7 +97,7 @@ class UserSignUp extends Component {
                     this.setState({errorMessage: json.errorMessage})
                 }else{
                     this.setState({errorMessage : ""})
-                    this.setState({userID : json.userID})
+                    this.setState({userId : json.userId})
                     this.setState({redirect: true})
                 }
             }) 
@@ -110,14 +110,14 @@ class UserSignUp extends Component {
         if (this.state.redirect){
             return <Redirect to={{
                 pathname : "/",
-                state: {userID : this.state.userID}
+                state: {userId : this.state.userId}
             }}
             />
         }
         return (
             
             <div >
-                <div id="navigation">
+                <div Id="navigation">
                 <Navbar></Navbar>
             </div>
                 <div className ="title">
@@ -134,15 +134,15 @@ class UserSignUp extends Component {
                         <tbody>
                     <tr>
                         <td>Username: </td>
-                        <td><input id="userName" placeholder="Username" onChange={this.setUsername}/></td>
+                        <td><input Id="userName" placeholder="Username" onChange={this.setUsername}/></td>
                     </tr>
                     <tr>
                         <td>Password:  </td>
-                        <td> <input id="password" placeholder="Password" onChange= {this.setPassword} type="Password"/> </td>
+                        <td> <input Id="password" placeholder="Password" onChange= {this.setPassword} type="Password"/> </td>
                     </tr>
                     <tr>
                         <td>Password Confirmation:</td>
-                        <td> <input  id="confirm"  placeholder="Confirm password" onChange= {this.setConfirmation} type="Password"/> </td>
+                        <td> <input  Id="confirm"  placeholder="Confirm password" onChange= {this.setConfirmation} type="Password"/> </td>
                     </tr>
                     </tbody>
                     </table>

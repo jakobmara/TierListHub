@@ -3,6 +3,7 @@ import Tier from './Tier.js'
 import TemplateDialogForm from './TemplateDialogForm'
 import '../css/CreateTemplate.css';
 import Navbar from './Navbar';
+import { Redirect } from "react-router-dom";
 
 class CreateTemplate extends Component {
 
@@ -13,6 +14,7 @@ class CreateTemplate extends Component {
 		this.handleDragOnItem = this.handleDragOnItem.bind(this);
 		this.handleDropOnTier = this.handleDropOnTier.bind(this);
 		
+		this.onLogOut = this.onLogOut.bind(this);
 		this.deleteItem = this.deleteItem.bind(this)
 		this.addNewTierItem = this.addNewTierItem.bind(this)
 		this.addNewTier = this.addNewTier.bind(this)
@@ -30,19 +32,32 @@ class CreateTemplate extends Component {
 				{id: "6", tierName: "F", items: []},
 				{id: "-1", tierName: "Unsorted", items: []}
 			],
-			userId: "1",
+			userId: this.props.location.state.userId,
 			dragType: "",
 			dragId: "-1",
 			dragTierId: "-1"
 		}
 	}
 
+	onLogOut(){
+		this.setState({userId: null})
+        window.history.replaceState({}, document.title)
+		this.setState({redirect: "/"})
+	}
+
 	render() {
+		if (this.state.redirect) {
+			return <Redirect to={{
+				pathname : this.state.redirect,
+				state: {userId : this.state.userId}
+			}}/>
+		}
+		
 		return (
 			<div className="CreateTierList">
-				<Navbar></Navbar>
+				<Navbar userId={this.state.userId} onLogOut={this.onLogOut}/>
 
-				<button onClick={(e) => console.log(this.state)}>Debug</button>
+				<button onClick={(e) => console.log(this)}>Debug</button>
 				
 				<div className="TierListContainer">
 					{this.state.tierlist
@@ -265,7 +280,7 @@ class CreateTemplate extends Component {
 
 		this.setState({tierlist: newTierListState})
 	}
-	
+		
 }
 
 export default CreateTemplate;

@@ -1,12 +1,9 @@
 import { Component } from 'react';
 import React from "react";
-import '../css/home.css';
+import '../css/Home.css';
 import Navbar from './Navbar';
-import {
-    Redirect,
-    useHistory
-
-  } from "react-router-dom";
+import { Redirect } from "react-router-dom";
+import TemplateDisplayComponent from './TemplateDisplayComponent';
 class Home extends Component{
 
     constructor(props){  
@@ -14,32 +11,74 @@ class Home extends Component{
         console.log("IN HOME CONSTRUCTOR")
         console.log(this.props.location)
 
-        if (this.props.location.state == undefined || this.props.location.state.userID == undefined){
-            this.state = {redirect : null, userID: null}
-        
-        } else {
-            this.state = {redirect : null, userID: this.props.location.state.userID}
-            console.log("props location in home: ", this.props.location.state)   
+        this.createTemplate = this.createTemplate.bind(this)
+        this.onLogOut = this.onLogOut.bind(this);
+
+
+        var userId = null
+        if (this.props.location.state != undefined && this.props.location.state.userId != undefined) {
+            userId = this.props.location.state
+        }
+
+        this.state = {
+            userId: userId,
+            templates: [],
+            redirect: null
         }
         
-        this.onLogOut = this.onLogOut.bind(this);
+    }
+    async componentDidMount() {
+        let requestUrl = 'http://localhost:5000/templates?page=1&size=20'
+        let request = await fetch(requestUrl)
+        let request_json = await request.json()
+        console.log(request_json)
+        let templates = request_json.map((template) => {
+            return {
+                id: template.id,
+                title: template.title,
+                img: template.img,
+                author: template.author
+            }
+        })
+        console.log(templates)
+        this.setState({templates: templates})
     }
 
     onLogOut(){
         console.log("IN home logging out")
-        this.setState({userID:null})
+        this.setState({userId: null})
         window.history.replaceState({}, document.title)
     }
 
+    createTemplate(){
+        this.setState({ redirect: "/createTemplate"})
+        
+    }
+
     render(){
-        if (this.state.redirect){
-            return <Redirect to={this.state.redirect}/>
+        if (this.state.redirect) {
+            console.log("redirecting with state")
+            console.log(this.state)
+            return <Redirect to={{
+                pathname : this.state.redirect,
+                state: {userId : this.state.userId}
+            }}
+            />
         }
-        console.log("USER ID IN HOME: ", this.state.userID)
         return (
             <div >
-                <Navbar userID={this.state.userID} onLogOut={this.onLogOut}>  </Navbar>   
-            GALLERY
+                <Navbar userId={this.state.userId} onLogOut={this.onLogOut}/>   
+                GALLERY
+                <button onClick={this.createTemplate}>Create a template</button>
+                <div>
+                    {this.state.templates.map((t) => {
+                        return <TemplateDisplayComponent 
+                                    img={t.img}
+                                    title={t.title}
+                                    author={this.author}
+                                    onClick={(e) => console.log(e.target)}/> 
+                    })}
+                </div>
             </div>
 
         );

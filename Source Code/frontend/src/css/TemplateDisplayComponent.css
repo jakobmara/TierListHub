@@ -1,0 +1,11 @@
+.templateContainer{
+    width:200px;
+    height: 200px;
+    border: 3px;
+    border-style: dashed;
+    padding: 10px;
+}
+
+.templateThumbnail {
+    max-width: 100%;
+}

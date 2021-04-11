@@ -16,16 +16,15 @@ class Navbar extends Component{
         console.log("navbar props: ", this.props)
         
         this.state = {redirect : null, 
-            userID: this.props.userID, 
+            userId: this.props.userId, 
             anchorEl: null, 
             menuOpen: false}
-        console.log("NAVBAR this: ", this.props.userID)
 
     }
 
     onLogOut(){
         this.props.onLogOut()
-        this.setState({userID:null})
+        this.setState({userId: null})
     }
 
 
@@ -44,9 +43,9 @@ class Navbar extends Component{
             return <Redirect to={this.state.redirect}/>
         }
         var navButtons = []
-        if (this.state.userID){
+        if (this.state.userId){
             console.log("CHANGING NAV BUTTONS")
-            navButtons = [<UserProfileMenu userID = {this.state.userID} onLogOut={this.onLogOut}/>]
+            navButtons = [<UserProfileMenu userId = {this.state.userId} onLogOut={this.onLogOut}/>]
         } else {
             navButtons = [                    
                 <button key="1" className ="login-btn"onClick={this.pressedSignup}>Sign Up</button>,

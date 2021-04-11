@@ -15,7 +15,7 @@ class UserProfileMenu extends Component{
         this.handleClose = this.handleClose.bind(this)
 
         this.state = {
-            userID : this.props.userID,
+            userId : this.props.userId,
             anchorEl: null, 
             menuOpen: false,
             username: null,
@@ -25,7 +25,7 @@ class UserProfileMenu extends Component{
     }
 
     async componentDidMount() {
-        let response = await fetch('/getUsername/' + this.state.userID)
+        let response = await fetch('/getUsername/' + this.state.userId)
         let responseJson = await response.json()
         this.setState({username : responseJson.userName})
     }
@@ -42,8 +42,10 @@ class UserProfileMenu extends Component{
         console.log(event.currentTarget.id)
         if (event.currentTarget.id == "Logout"){
             console.log("logged out")
-            this.setState({ userID : null})
+            this.setState({ userId : null})
             this.props.onLogOut()
+            alert("Logged out succesfully")
+
         }
         this.setState({anchorEl: null})
         this.setState({menuOpen : false})
