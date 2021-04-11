@@ -43,3 +43,18 @@
     transition: all 0.5s;
     color: #fff;
 }
+.userProfileMenu{
+    float: right;
+    text-align: right;
+
+}
+.flex-last{
+    float: right;
+    text-align: right;
+    display: inline-flex;
+
+}
+.flex-auto{
+    float: left;
+
+}

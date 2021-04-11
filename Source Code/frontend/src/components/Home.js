@@ -27,7 +27,8 @@ class Home extends Component{
             templates: [],
             redirect: null
         }
-        
+        //document.body.style = 'background-color: #0f0f0f;';
+
     }
     async componentDidMount() {
         let requestUrl = 'http://localhost:5000/templates?page=1&size=20'
@@ -78,10 +79,9 @@ class Home extends Component{
             />
         }
         return (
-            <div >
+            <div className="home">
                 <Navbar userId={this.state.userId} onLogOut={this.onLogOut} currentPage={"home"}/>   
                 GALLERY
-                <button onClick={this.createTemplate}>Create a template</button>
                 <div>
                     {this.state.templates.map((t) => {
                         return <TemplateDisplayComponent 

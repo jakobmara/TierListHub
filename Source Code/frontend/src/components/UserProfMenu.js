@@ -56,6 +56,7 @@ class UserProfileMenu extends Component{
         this.setState({menuOpen : false})
 
     };
+    
 
     render() {
         if (this.state.redirect){

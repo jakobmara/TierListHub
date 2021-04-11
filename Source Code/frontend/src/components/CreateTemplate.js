@@ -56,7 +56,7 @@ class CreateTemplate extends Component {
 		
 		return (
 			<div className="CreateTemplate">
-				<Navbar userId={this.state.userId} onLogOut={this.onLogOut}/>
+				<Navbar userId={this.state.userId} onLogOut={this.onLogOut} currentPage={""}/>
 
 				<button onClick={(e) => console.log(this)}>Debug</button>
 				

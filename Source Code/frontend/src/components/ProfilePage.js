@@ -18,6 +18,8 @@ class ProfilePage extends Component {
             tierLists: [],
             templates: []
         }
+        this.onLogOut = this.onLogOut.bind(this);
+
     }
 
     async componentDidMount(){
@@ -65,10 +67,22 @@ class ProfilePage extends Component {
 
     }
 
+    onLogOut(){
+		this.setState({userId: null})
+        window.history.replaceState({}, document.title)
+		this.setState({redirect: "/"})
+	}
+
     render(){
+        if (this.state.redirect) {
+			return <Redirect to={{
+				pathname : this.state.redirect,
+				state: {userId : this.state.userId}
+			}}/>
+		}
         return (
-            <div>
-                <Navbar userId={this.state.userId}/>
+            <div className="profilePage">
+                <Navbar userId={this.state.userId} onLogOut={this.onLogOut}/>
                 User profile page {this.state.userId}
                 <div>
                     {this.state.templates.map((t) => {

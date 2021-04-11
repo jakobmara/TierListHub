@@ -218,7 +218,6 @@ def getUserTierLists():
     userId = int(request.args.get('userId'))
 
     userTierLists = getTierLists(userId)
-    print(userId)
 
     formatted_lists = [{
         "id" : l[0],
