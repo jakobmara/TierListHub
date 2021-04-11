@@ -93,7 +93,7 @@ class UserSignUp extends Component {
             })
             .then(json => {
                 console.log(json)
-                if (json.errorMessage === "username already exists"){
+                if (json.userId === undefined){
                     this.setState({errorMessage: json.errorMessage})
                 }else{
                     this.setState({errorMessage : ""})
@@ -118,7 +118,7 @@ class UserSignUp extends Component {
             
             <div >
                 <div Id="navigation">
-                <Navbar></Navbar>
+                <Navbar currentPage={"signup"}/>
             </div>
                 <div className ="title">
                     <h1>User Sign up</h1>

@@ -52,7 +52,7 @@ class UserLogin extends Component {
             .then(json => {
                 console.log(json)
                 console.log("Log userId: " + json.userId)
-                if (json.userId == undefined){
+                if (json.userId === undefined){
                     this.setState({errorMessage: json.errorMessage})
                 }else{
                     console.log(json)
@@ -70,7 +70,10 @@ class UserLogin extends Component {
             return <Redirect 
             to={{
                 pathname : this.state.redirect,
-                state: {userId : this.state.userId},
+                state: {
+                    userId : this.state.userId,
+                    myPage : "login"
+                },
             }}
             />
         }
@@ -78,7 +81,7 @@ class UserLogin extends Component {
         return (
             
             <div>
-                <Navbar></Navbar>
+                <Navbar currentPage={"login"}/>
 
                 <div className ="title">
                     <h1>User Login</h1>
