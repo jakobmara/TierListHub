@@ -113,7 +113,7 @@ def getTemplateJson(templateId):
         template_data['items'] = {imageId:
             url_for('getImageFromTemplate', templateId= template_data['templateId'], imageId= imageId, _external=True)
             for imageId in template_data['imageIds']}
-        print(template_data)
+        template_data['img'] = getTemplateDisplayImage(templateId)
         return jsonify(template_data)
     return "Template not found", 400
 

@@ -13,6 +13,7 @@ class Navbar extends Component{
         this.pressedLogin = this.pressedLogin.bind(this)
         this.pressedSignup = this.pressedSignup.bind(this)
         this.onLogOut = this.onLogOut.bind(this)
+        this.setRedirectToHomePage = this.setRedirectToHomePage.bind(this)
         console.log("navbar props: ", this.props)
         
         this.state = {
@@ -58,6 +59,11 @@ class Navbar extends Component{
     }
 
 
+    setRedirectToHomePage(e) {
+        let redirectUrl = "/"
+        this.setState({ redirect: redirectUrl})
+    }
+
     render(){
         if (this.state.redirect){
             console.log("REDIRECTING AGAIN")
@@ -79,7 +85,7 @@ class Navbar extends Component{
             <div className="body">
                 <div className="navBar">
                 <div className ="title">
-                    <a href="/"><img className="logo" alt=""  src="https://i.imgur.com/J5hmVvj.png"/></a>
+                   <img className="logo" alt=""  onClick={this.setRedirectToHomePage} src="https://i.imgur.com/J5hmVvj.png"/>
                     {navButtons}
                 </div>
             </div>

@@ -4,6 +4,7 @@ import '../css/Home.css';
 import Navbar from './Navbar';
 import { Redirect } from "react-router-dom";
 import TemplateDisplayComponent from './TemplateDisplayComponent';
+
 class Home extends Component{
 
     constructor(props){  
@@ -73,7 +74,7 @@ class Home extends Component{
                                 userId: this.state.userId,
                                 templateId: this.state.redirectTemplateId
                             }
-            }}
+                        }}
             />
         }
         return (

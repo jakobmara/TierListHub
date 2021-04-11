@@ -269,7 +269,8 @@ def getTemplateFromTemplateId(templateId) -> array:
         "userId": template[1],
         "templateName": template[2],
         "labels": json.loads(template[3]),
-        "imageIds": [image[0] for image in images]
+        "imageIds": [image[0] for image in images],
+        "author" : getUserName(template[1])
         }
 
     print(f"labels:")
@@ -510,6 +511,15 @@ def getImagesFromTemplate(templateID):
 
     return images
 
+def getUserPage(userId):
+    conn = sqlite3.connect(DBNAME)
+    cur = conn.cursor()
+
+    userTemplates = getTemplatesFromUser(userId) #array of template objects created by user
+
+    userTierLists = getTierLists(userId) #array of tierList objects created by user
+
+    
 
 
 def populateDB():

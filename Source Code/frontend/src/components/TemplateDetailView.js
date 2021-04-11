@@ -1,13 +1,21 @@
 import { Component } from 'react';
+import { Redirect } from "react-router-dom";
+
 import Navbar from './Navbar'
 import TierList from './TierList'
+
+import '../css/TemplateDetailView.css';
+
 
 class TemplateDetailView extends Component{
 
 	constructor(props) {
 		super(props)
-		console.log(this)
+
+		this.setRedirectToCreate = this.setRedirectToCreate.bind(this)
+
 		this.state = {
+			userId: this.props.location.state.userId,
 			templateId: this.props.match.params.templateId,
 			tierLists: []}
 	}
@@ -18,6 +26,11 @@ class TemplateDetailView extends Component{
 		let templateJson = await templateResponse.json()
 		console.log(templateJson)
 
+		this.setState({
+			templateTitle: templateJson.templateName,
+			templateAuthor: templateJson.author,
+			templateImg: templateJson.img,
+		})
 
 		let tierListsRequestUrl = "http://localhost:5000/tierLists?templateId=" + this.state.templateId
 		let tierListsResponse  = await fetch(tierListsRequestUrl)
@@ -42,17 +55,43 @@ class TemplateDetailView extends Component{
 				})
 			}
 		})
-
+		
 		console.log(tierLists)
 		this.setState({ tierLists: tierLists })
 	}
 
+
+	setRedirectToCreate() {
+		if (this.state.userId) {
+			this.setState({ redirect : "/createTierList/" + this.state.templateId})
+		} else {
+			alert("You must log in to create Tier Lists")
+		}
+	}
+
+
     render(){
+		if (this.state.redirect) {
+			return <Redirect 
+                        to={{
+                            pathname : this.state.redirect,
+                            state: {
+                                userId: this.state.userId,
+                                templateId: this.state.templateId
+                            }
+                        }}
+            />
+		}
+
         return(
-            <div className="CreateTierList">
-				<Navbar/>
+            <div className="TemplateDetailView">
+				<Navbar userId={this.state.userId}/>
 
 				<button onClick={(e) => console.log(this.state)}>Debug</button>
+				<img alt="Template Thumbnail" src={this.state.templateImg} width="25%"/>
+				<h1>{this.state.templateTitle}</h1>
+				<p>{this.state.templateAuthor}</p>
+				<button onClick={this.setRedirectToCreate}>Create a Tierlist from this Template</button>
 				{
 					this.state.tierLists.map((tl) => { 
 						return (
@@ -63,7 +102,7 @@ class TemplateDetailView extends Component{
 						</div>)
 					})
 					.sort((a, b) => (a.id > b.id) ? 1 : ((b.id > a.id) ? -1 : 0))
-				}			
+				}
 			</div>
         )
     }

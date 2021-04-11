@@ -1,5 +1,9 @@
 import { Component } from 'react';
+import { Redirect } from "react-router-dom";
+
 import TierList from './TierList.js'
+import Navbar from './Navbar'
+
 import '../css/CreateTierList.css';
 
 class CreateTierList extends Component {
@@ -15,7 +19,7 @@ class CreateTierList extends Component {
 
 		this.state = {
 			tiers: [],
-			userId: "1",
+			userId: this.props.location.state.userId,
 			templateId: this.props.match.params.templateId,
 			dragType: "",
 			dragId: "-1",
@@ -25,18 +29,32 @@ class CreateTierList extends Component {
 	}
 
 	render() {
+		if (this.state.redirect) {
+			return <Redirect 
+						to={{
+							pathname : this.state.redirect,
+							state: {
+								userId: this.state.userId,
+							}
+						}}
+					/>
+		}
 		return (
-			<div className="CreateTierList">
-				<button onClick={(e) => console.log(this.state)}>Debug</button>
-				<TierList 
-					tiers={this.state.tiers}
-					isEditable={false}
-					draggable={true}
-					handleDragOnItem={this.handleDragOnItem}
-					handleDropOnTier={this.handleDropOnTier}
-				/>
-				<button onClick={this.submitTierList}>Submit Template</button>
+			<div>
+				<Navbar userId={this.state.userId}/>
+				<div className="CreateTierList">
+					<button onClick={(e) => console.log(this.state)}>Debug</button>
+					<TierList 
+						tiers={this.state.tiers}
+						isEditable={false}
+						draggable={true}
+						handleDragOnItem={this.handleDragOnItem}
+						handleDropOnTier={this.handleDropOnTier}
+					/>
+					<button onClick={this.submitTierList}>Submit Template</button>
+				</div>
 			</div>
+			
 		);
 	}
 
@@ -70,11 +88,12 @@ class CreateTierList extends Component {
 		}
 
 		let tierListName = prompt("Tierlist Title:")
+		console.log(tierListName)
 		if (tierListName === "") {
 			alert("A title must be provided to submit a Tierlist")
 			console.log("Got empty name")
 			return	
-		} else if (tierListName) {
+		} else if (tierListName === null) {
 			console.log("Canceled submission")
 			return
 		}
@@ -98,6 +117,14 @@ class CreateTierList extends Component {
 		}
 		console.log(submitTemplateRequest)
 		fetch("http://localhost:5000/uploadTierlist", submitTemplateRequest)
+		.then((r) => {
+				if (r.ok) {
+					alert("Tierlist succesfully submitted")
+					this.setState({ redirect: '/'})
+				} else {
+					alert("Error submitting.")
+				}
+			})
 	}
 
 	handleDragOnItem(ev) {

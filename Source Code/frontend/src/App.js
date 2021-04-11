@@ -13,7 +13,7 @@ import TemplateDetailView from './components/TemplateDetailView';
 import UserSignUp from './components/UserSignUp';
 import UserLogin from './components/Login'
 import Home from "./components/Home"
-
+import ProfilePage from "./components/ProfilePage"
 
 
 class App extends Component {
@@ -28,6 +28,8 @@ class App extends Component {
         <Route exact path="/templateDetail/:templateId" component={TemplateDetailView}/>
 
         <Route exact path="/createTierList/:templateId" component={CreateTierList}/>
+
+        <Route exact path="/user/:userId" component={ProfilePage}/>
 
         <Route exact path="/createTemplate" component={CreateTemplate}/>
 
