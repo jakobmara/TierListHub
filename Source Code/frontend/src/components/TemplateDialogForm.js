@@ -91,7 +91,7 @@ class TempalteDialogForm extends Component {
 							<img src={this.state.thumbnailUrl} width="128px" height="128px"/>
 							<Button variant="contained" component="label">
 								Choose Image
-								<input type="file" hidden onChange={this.addThumbnail}/>
+								<input type="file" accept="image/*" hidden onChange={this.addThumbnail}/>
 							</Button>
 						</div>
 						

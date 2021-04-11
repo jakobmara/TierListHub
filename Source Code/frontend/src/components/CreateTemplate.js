@@ -82,6 +82,7 @@ class CreateTemplate extends Component {
 				<div className="AddNewItemContainer">
 					<input 
 						type="file"
+						accept="image/*"
 						onChange={this.addNewTierItem}
 					/>
 					<img
@@ -184,6 +185,9 @@ class CreateTemplate extends Component {
 
 
 	async addNewTierItem(ev) {
+		if (ev.target.files.length == 0) {
+			return
+		}
 		let file = URL.createObjectURL(ev.target.files[0])
 		var maxId = 0
 		for (const tier in this.state.tierlist) {
