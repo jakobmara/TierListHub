@@ -79,7 +79,7 @@ class Home extends Component{
         }
         return (
             <div >
-                <Navbar userId={this.state.userId} onLogOut={this.onLogOut}/>   
+                <Navbar userId={this.state.userId} onLogOut={this.onLogOut} currentPage={"home"}/>   
                 GALLERY
                 <button onClick={this.createTemplate}>Create a template</button>
                 <div>

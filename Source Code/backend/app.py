@@ -169,7 +169,7 @@ def getTemplates():
 
 @app.route('/tierLists', methods =["GET"])
 @cross_origin()
-def getTierLists():
+def getTierListsFromTemplateId():
     print(request.args)
     tempId = int(request.args.get('templateId'))
     lists = getTierListFromTemplate(tempId)
@@ -190,4 +190,45 @@ def getTierLists():
 
     resp = jsonify(formatted_lists)
     resp.status_code = 200
+    return resp
+
+@app.route("/getUserTemplates", methods =['GET'])
+@cross_origin()
+def getUserTemplates():
+
+    userId = int(request.args.get('userId'))
+
+    userTemplates = getTemplatesFromUser(userId)
+
+    formatted_templates = [{
+        "id" : template[0],
+        "title" : template[2],
+        "img" : url_for('getTemplateImage', templateId=template[0] , _external=True),
+        "author": getUserName(template[1])
+    } for template in userTemplates]
+
+    resp = jsonify(formatted_templates)
+    resp.status_code = 200
+    return resp
+
+@app.route("/getUserTierLists", methods =['GET'])
+@cross_origin()
+def getUserTierLists():
+
+    userId = int(request.args.get('userId'))
+
+    userTierLists = getTierLists(userId)
+    print(userId)
+
+    formatted_lists = [{
+        "id" : l[0],
+        "templateId" : l[2],
+        "title" : l[4],
+        "rankings": json.loads(l[3]),
+        "author": getUserName(l[1])
+    } for l in userTierLists]
+    print(f"Formatted lists: {formatted_lists}")
+    resp = jsonify(formatted_lists)
+    resp.status_code = 200
+    print(resp)
     return resp

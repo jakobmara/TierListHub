@@ -41,7 +41,6 @@ class Navbar extends Component{
 
         this.setState({redirect:"/login"})
         if (this.props.currentPage === "login"){
-            console.log("reloading page")
             window.location.reload()
         }
 
@@ -53,7 +52,6 @@ class Navbar extends Component{
 
         this.setState({redirect:"/signup"})
         if (this.props.currentPage === "signup"){
-            console.log("reloading signup page")
             window.location.reload()
         }
     }
@@ -62,12 +60,22 @@ class Navbar extends Component{
     setRedirectToHomePage(e) {
         let redirectUrl = "/"
         this.setState({ redirect: redirectUrl})
+        if (this.props.currentPage === "home"){
+            window.location.reload()
+        }
     }
 
     render(){
         if (this.state.redirect){
             console.log("REDIRECTING AGAIN")
-            return <Redirect to={this.state.redirect}/>
+            return <Redirect 
+						to={{
+							pathname : this.state.redirect,
+							state: {
+								userId: this.state.userId,
+							}
+						}}
+					/>
         }
         var navButtons = []
         if (this.state.userId){

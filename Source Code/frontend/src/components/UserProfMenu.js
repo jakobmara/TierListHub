@@ -48,12 +48,28 @@ class UserProfileMenu extends Component{
             alert("Logged out succesfully")
 
         }
+        if(event.currentTarget.id=="account"){
+            console.log("user profile")
+            this.setState({redirect : "/user/" + this.state.userId})
+        }
         this.setState({anchorEl: null})
         this.setState({menuOpen : false})
 
     };
 
     render() {
+        if (this.state.redirect){
+            return <Redirect 
+            to={{
+                pathname : this.state.redirect,
+                state: {
+                    userId : this.state.userId,
+                    myPage : "userProfile"
+                },
+            }}
+            />
+        }
+
         return (
             <div>
                 <Button aria-controls="simple-menu" aria-haspopup="true" onClick={this.handleClick}>
@@ -66,7 +82,7 @@ class UserProfileMenu extends Component{
                     open={this.state.menuOpen}
                     onClose={this.handleClose}
                 >
-                    <MenuItem onClick={this.handleClose}>My account</MenuItem>
+                    <MenuItem onClick={this.handleClose} id="account">My account</MenuItem>
                     <MenuItem onClick={this.handleClose} id="Logout" >Logout</MenuItem>
                 </Menu>
             </div>

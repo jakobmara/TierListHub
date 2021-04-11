@@ -212,19 +212,15 @@ def createTemplate(userId, title, labels, titleImage, images) -> int:
     return templateId
 
 
-def getTierLists(userId=None, templateId = None) -> array:
+def getTierLists(userId) -> array:
     # get template ID
     conn = sqlite3.connect(DBNAME)
     cur = conn.cursor()
     
-    if userId == None:
-        sql = '''SELECT * FROM tierLists WHERE userId = ?'''
-        data = [userId]
-    else:
-        sql = '''SELECT * FROM tierLists WHERE templateId = ? '''
-        data = [templateId]
+    sql = '''SELECT * FROM tierLists WHERE userId = ?'''
+    data = [userId]
     
-    cur.execute(sql,data)
+    cur.execute(sql, data)
     tierLists = cur.fetchall()
     cur.close()
     conn.close()
