@@ -9,9 +9,13 @@ import {
 
 import CreateTemplate from './components/CreateTemplate';
 import CreateTierList from './components/CreateTierList';
+import TemplateDetailView from './components/TemplateDetailView';
 import UserSignUp from './components/UserSignUp';
 import UserLogin from './components/Login'
 import Home from "./components/Home"
+
+
+
 class App extends Component {
   render(){
     return <Router>
@@ -21,8 +25,13 @@ class App extends Component {
         
         <Route exact path="/login" component={UserLogin}/>
         
+        <Route exact path="/templateDetail/:templateId" component={TemplateDetailView}/>
+
+        <Route exact path="/createTierList/:templateId" component={CreateTierList}/>
+
         <Route exact path="/createTemplate" component={CreateTemplate}/>
-        
+
+
         <Route path="/" component={Home}/>
 
 

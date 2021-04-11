@@ -51,8 +51,8 @@ class UserLogin extends Component {
             })
             .then(json => {
                 console.log(json)
-                console.log("userId: " + json.userId)
-                if (json.errorMessage === "invalId password or username"){
+                console.log("Log userId: " + json.userId)
+                if (json.userId == undefined){
                     this.setState({errorMessage: json.errorMessage})
                 }else{
                     console.log(json)

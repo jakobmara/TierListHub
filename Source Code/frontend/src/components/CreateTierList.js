@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import Tier from './Tier.js'
+import TierList from './TierList.js'
 import '../css/CreateTierList.css';
 
 class CreateTierList extends Component {
@@ -14,9 +14,9 @@ class CreateTierList extends Component {
 		this.submitTierList = this.submitTierList.bind(this)
 
 		this.state = {
-			tierlist: [],
+			tiers: [],
 			userId: "1",
-			templateId: "2",
+			templateId: this.props.match.params.templateId,
 			dragType: "",
 			dragId: "-1",
 			dragTierId: "-1"
@@ -28,24 +28,13 @@ class CreateTierList extends Component {
 		return (
 			<div className="CreateTierList">
 				<button onClick={(e) => console.log(this.state)}>Debug</button>
-				<div className="TierListContainer">
-					{this.state.tierlist
-						.sort((a, b) => (a.id > b.id) ? 1 : ((b.id > a.id) ? -1 : 0))
-						.map((tier) => (
-							<Tier
-								id={tier.id}
-								key={tier.id}
-								tierName={tier.tierName}
-								items={tier.items}
-								isEditable={false}
-
-								draggable={true}
-								handleDragOnItem={this.handleDragOnItem}
-								handleDropOnTier={this.handleDropOnTier}
-							/>)
-						)
-					}
-				</div>
+				<TierList 
+					tiers={this.state.tiers}
+					isEditable={false}
+					draggable={true}
+					handleDragOnItem={this.handleDragOnItem}
+					handleDropOnTier={this.handleDropOnTier}
+				/>
 				<button onClick={this.submitTierList}>Submit Template</button>
 			</div>
 		);
@@ -60,21 +49,22 @@ class CreateTierList extends Component {
 		const templateJson = await response.json()
 		console.log(templateJson)
 
-		let tierLabels = JSON.parse(templateJson.labels)
-		var tierList = Object.keys(tierLabels).map((tierId) => {
+		let tierLabels = templateJson.labels
+		var tiers = Object.keys(tierLabels).map((tierId) => {
 			return {id: tierId, tierName: tierLabels[tierId], items: []}
 		})
 
 		let unsortedItems = Object.keys(templateJson.items).map((itemId) => {
 			return {id: itemId, img: templateJson.items[itemId]}
 		})
-		tierList.push({id: "-1", tierName: "Unsorted", items: unsortedItems})
+		tiers.push({id: "-1", tierName: "Unsorted", items: unsortedItems})
 
-		this.setState({tierlist: tierList})
+		this.setState({tiers: tiers})
+		console.log("Set tiers from API")
 	}
 
 	submitTierList() {
-		if (this.state.tierlist.find(tier => tier.id === "-1").items.length !== 0) {
+		if (this.state.tiers.find(tier => tier.id === "-1").items.length !== 0) {
 			alert("All items must be sorted before submitting a Tierlist")
 			return
 		}
@@ -89,7 +79,7 @@ class CreateTierList extends Component {
 			return
 		}
 
-		let tierListForRequest = this.state.tierlist.filter((tier) =>{
+		let tierListForRequest = this.state.tiers.filter((tier) =>{
 			return tier.id !== "-1"
 		})
 
@@ -128,7 +118,7 @@ class CreateTierList extends Component {
 
 		switch(this.state.dragType) {
 			case "item":
-				this.setState({tierlist: this.handleItemDropOnTier(ev)})
+				this.setState({tiers: this.handleItemDropOnTier(ev)})
 				break
 			case "tier":
 				console.log("Dragged tier on tier")
@@ -144,10 +134,10 @@ class CreateTierList extends Component {
 
 		let dropTierId = ev.currentTarget.id
 
-		let dragTier = this.state.tierlist.find((tier) => tier.id === dragTierId)
+		let dragTier = this.state.tiers.find((tier) => tier.id === dragTierId)
 		const dragItem = dragTier.items.find((item) => item.id === dragId)
 
-		let newTierListState = this.state.tierlist.map((tier) => {
+		let newTierListState = this.state.tiers.map((tier) => {
 			if (tier.id === dragTierId) {
 				let tierItemIndex = tier.items.findIndex((tierItem) => tierItem.id === dragId)
 				tier.items.splice(tierItemIndex, 1)

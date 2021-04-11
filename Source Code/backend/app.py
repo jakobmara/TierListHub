@@ -107,6 +107,7 @@ def getTemplateImage(templateId):
 @app.route('/template/<templateId>', methods=['GET'])
 @cross_origin()
 def getTemplateJson(templateId):
+    print(f"TemplateId: {templateId}")
     template_data = getTemplateFromTemplateId(templateId)
     if template_data is not None:
         template_data['items'] = {imageId:
@@ -133,9 +134,13 @@ def uploadTierlist():
         return resp
 
     return "Bad Request", 400
+
+
 @app.route('/getUsername/<userId>', methods =['GET'])
 @cross_origin()
 def getUserNameFromId(userId):
+    print(f"USerId: {userId}")
+
     name = getUserName(userId)
 
     resp = jsonify({"userName": name})
@@ -150,7 +155,7 @@ def getTemplates():
     pageNum = int(request.args.get('page'))
     pageSize = int(request.args.get('size'))
     templates = getTemplatePage(pageNum,pageSize)
-
+    
     formatted_templates = [{
         "id" : template[0],
         "title" : template[2],
@@ -169,10 +174,17 @@ def getTierLists():
     tempId = int(request.args.get('templateId'))
     lists = getTierListFromTemplate(tempId)
 
+    images = getImagesFromTemplate(tempId)
+
+    imageURLs = []
+    for i in images:
+        imageURLs.append(url_for('getImageFromTemplate', templateId=tempId, imageId=i[0], _external=True))
+
     formatted_lists = [{
         "id" : l[0],
         "title" : l[4],
-        "img" : url_for('getTemplateImage', templateId=l[2] , _external=True),
+        "images" : imageURLs,
+        "rankings": json.loads(l[3]),
         "author": getUserName(l[1])
     } for l in lists]
 

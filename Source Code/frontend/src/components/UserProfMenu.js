@@ -25,6 +25,7 @@ class UserProfileMenu extends Component{
     }
 
     async componentDidMount() {
+        console.log(this.state)
         let response = await fetch('/getUsername/' + this.state.userId)
         let responseJson = await response.json()
         this.setState({username : responseJson.userName})

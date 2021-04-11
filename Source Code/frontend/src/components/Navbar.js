@@ -15,7 +15,8 @@ class Navbar extends Component{
         this.onLogOut = this.onLogOut.bind(this)
         console.log("navbar props: ", this.props)
         
-        this.state = {redirect : null, 
+        this.state = {
+            redirect : null, 
             userId: this.props.userId, 
             anchorEl: null, 
             menuOpen: false}
@@ -44,7 +45,7 @@ class Navbar extends Component{
         }
         var navButtons = []
         if (this.state.userId){
-            console.log("CHANGING NAV BUTTONS")
+            console.log(this.state)
             navButtons = [<UserProfileMenu userId = {this.state.userId} onLogOut={this.onLogOut}/>]
         } else {
             navButtons = [                    

@@ -4,9 +4,9 @@ import '../css/TemplateDisplayComponent.css';
 class TemplateDisplayComponent extends Component{
     render() {
         return (
-            <div className="templateContainer" onClick={this.props.onClick}>
-                <img className="templateThumbnail"alt=""src={this.props.img}/>
-                <h3>{this.props.title}</h3>
+            <div className="templateContainer" onClick={this.props.onClick} id={this.props.id}>
+                <img className="templateThumbnail"alt=""src={this.props.img} id={this.props.id}/>
+                <h3 id={this.props.id}>{this.props.title}</h3>
                 <p>{this.props.author}</p>
             </div>
         )

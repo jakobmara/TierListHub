@@ -13,11 +13,12 @@ class Home extends Component{
 
         this.createTemplate = this.createTemplate.bind(this)
         this.onLogOut = this.onLogOut.bind(this);
+        this.setRedirectToTemplateDetailView = this.setRedirectToTemplateDetailView.bind(this)
 
 
         var userId = null
         if (this.props.location.state != undefined && this.props.location.state.userId != undefined) {
-            userId = this.props.location.state
+            userId = this.props.location.state.userId
         }
 
         this.state = {
@@ -55,13 +56,23 @@ class Home extends Component{
         
     }
 
+    setRedirectToTemplateDetailView(e) {
+        let id = e.target.id
+        let redirectUrl = "/templateDetail/" + id
+        console.log(e.target)
+        this.setState({ redirect: redirectUrl, redirectTemplateId: id})
+    }
+
     render(){
         if (this.state.redirect) {
             console.log("redirecting with state")
-            console.log(this.state)
-            return <Redirect to={{
-                pathname : this.state.redirect,
-                state: {userId : this.state.userId}
+            return <Redirect 
+                        to={{
+                            pathname : this.state.redirect,
+                            state: {
+                                userId: this.state.userId,
+                                templateId: this.state.redirectTemplateId
+                            }
             }}
             />
         }
@@ -76,7 +87,9 @@ class Home extends Component{
                                     img={t.img}
                                     title={t.title}
                                     author={this.author}
-                                    onClick={(e) => console.log(e.target)}/> 
+                                    onClick={this.setRedirectToTemplateDetailView}
+                                    id={t.id}
+                                /> 
                     })}
                 </div>
             </div>
