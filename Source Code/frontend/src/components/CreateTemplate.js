@@ -37,7 +37,9 @@ class CreateTemplate extends Component {
 			userId: this.props.location.state.userId,
 			dragType: "",
 			dragId: "-1",
-			dragTierId: "-1"
+			dragTierId: "-1",
+			itemIdCounter: 0,
+			tierIdCounter: 7,
 		}
 	}
 
@@ -196,15 +198,13 @@ class CreateTemplate extends Component {
 		if (ev.target.files.length == 0) {
 			return
 		}
+
 		let file = URL.createObjectURL(ev.target.files[0])
-		var maxId = 0
-		for (const tier in this.state.tierlist) {
-			for (const item in this.state.tierlist[tier].items) {
-				if (this.state.tierlist[tier].items[item].id > maxId) {
-					maxId = this.state.tierlist[tier].items[item].id
-				}
-			}
-		}
+
+		var maxId = this.state.itemIdCounter
+		this.setState({itemIdCounter: maxId + 1})
+
+		console.log(maxId)
 
 		const blob = await fetch(file).then(r => r.blob())
 
@@ -250,12 +250,8 @@ class CreateTemplate extends Component {
 	}
 
 	addNewTier(ev) {
-		var maxId = 0
-		for (const tier in this.state.tierlist) {
-			if (this.state.tierlist[tier].id > maxId) {
-				maxId = this.state.tierlist[tier].id
-			}
-		}
+		let maxId = this.state.tierIdCounter
+		this.setState({tierIdCounter: maxId + 1})
 
 		let newTier = {id: String(parseInt(maxId) + 1), position: 99, items: []}
 

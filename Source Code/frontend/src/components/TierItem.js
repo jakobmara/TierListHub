@@ -5,6 +5,7 @@ class TierItem extends React.Component {
         return (
             <img
                 id={this.props.id}
+                key={this.props.id}
                 tierid={this.props.tierid}
                 position={this.props.position}
                 className="TierItem"

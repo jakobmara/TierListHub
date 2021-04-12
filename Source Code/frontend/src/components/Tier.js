@@ -18,7 +18,6 @@ class Tier extends React.Component {
     }
 
     render() {
-        console.log(this.state.tierName)
         var tierNameLabel = <h1 className="TierLabel">{this.state.tierName}</h1>
         var deleteButton = null
         // This is a unsorted tier
