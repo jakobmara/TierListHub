@@ -559,4 +559,4 @@ def testDB():
 if __name__ == "__main__":
     dropTables()
     populateDB()
-    testDB()
+    #testDB()
