@@ -1,5 +1,5 @@
 .TierLabel {
-
+    border: red;
 }
 
 .TierLabel {
@@ -9,8 +9,16 @@
 .EditableTierLabel {
     min-height: inherit;
     background-color: #202020;
+    color: white;
 }
 
 .TierItems {
     min-height: 64px;
+}
+.TierList{
+    background-color: #0f0f0f;
+}
+.DeleteTierButton{
+    background-color: #3a3a3a;
+    color: white;
 }

@@ -1,6 +1,7 @@
 import { Component } from 'react';
 import { Redirect } from "react-router-dom";
 import React from "react";
+import { Card, CardContent, Typography, Paper, Container} from '@material-ui/core';
 
 import Navbar from './Navbar';
 import TemplateDisplayComponent from './TemplateDisplayComponent';
@@ -83,32 +84,40 @@ class ProfilePage extends Component {
         return (
             <div className="profilePage">
                 <Navbar userId={this.state.userId} onLogOut={this.onLogOut}/>
-                User profile page {this.state.userId}
-                <div>
-                    {this.state.templates.map((t) => {
-                        return <TemplateDisplayComponent 
-                                    img={t.img}
-                                    title={t.title}
-                                    author={this.author}
-                                    onClick={this.setRedirectToTemplateDetailView}
-                                    id={t.id}
-                                /> 
-                    })}
-                </div>
-                <div id="tierLists"> 
-                <h3>tierLists</h3>
+                <Container className="templateView" maxWidth="sm">
+                    <h2>Created Templates</h2>
+                    <hr id="seperator"/>
+                    <div id="grid-container">
+                        {this.state.templates.map((t) => {
+                            return <TemplateDisplayComponent 
+                                        img={t.img}
+                                        title={t.title}
+                                        author={this.author}
+                                        onClick={this.setRedirectToTemplateDetailView}
+                                        id={t.id}
+                                    /> 
+                        })}
+                    </div>
+                </Container>
+                <h2 style={{textAlign: "center"}}>Created Tier lists</h2>
+                <hr id="seperator" style={{width: 50 + "%"}}/>
                 {
 					this.state.tierLists.map((tl) => { 
 						return (
-						<div>
-							<h2>{tl.title}</h2>
-							<p>{tl.author}</p>
-							<TierList tiers={tl.tiers} key={tl.id}/>
-						</div>)
-					})
+                            <Card style={{backgroundColor: "#0f0f0f"}}>
+                                <CardContent className="TemplateDetailView">
+                                    <Typography variant="h5" component="h2">
+                                        {tl.title}
+                                    </Typography>
+                                    <Typography style={{color:"grey"}} gutterBottom>
+                                    By: {tl.author}
+                                    </Typography>
+                                    <TierList tiers={tl.tiers} key={tl.id}/>
+                                </CardContent>
+                            </Card>)
+                        })
 					.sort((a, b) => (a.id > b.id) ? 1 : ((b.id > a.id) ? -1 : 0))
 				}
-                </div>
                 </div>
         )
     }

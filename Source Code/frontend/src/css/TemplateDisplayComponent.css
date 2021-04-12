@@ -4,8 +4,15 @@
     border: 3px;
     border-style: dashed;
     padding: 10px;
+    text-align: center;
+}
+.grid-item{
+    grid-auto-rows: min-content;
+    padding-top: 0em;
+    background-color: rgb(51, 51, 51);
 }
 
 .templateThumbnail {
-    max-width: 100%;
+    max-width: 400px;
+    height: 150px;
 }

@@ -5,7 +5,7 @@ import Navbar from './Navbar'
 import TierList from './TierList'
 
 import '../css/TemplateDetailView.css';
-import { Card, CardContent, Typography, Paper} from '@material-ui/core';
+import { Card, CardContent, Typography, Paper, Container} from '@material-ui/core';
 
 
 class TemplateDetailView extends Component{
@@ -18,7 +18,11 @@ class TemplateDetailView extends Component{
 		this.state = {
 			userId: this.props.location.state.userId,
 			templateId: this.props.match.params.templateId,
-			tierLists: []}
+			tierLists: []
+		}
+
+		document.body.style = 'background-color: #0f0f0f;';
+
 	}
 
 	async componentDidMount() {
@@ -87,20 +91,22 @@ class TemplateDetailView extends Component{
         return(
 			<div className="DetailPaper"> 
 				<Navbar userId={this.state.userId}/>
-				<button onClick={(e) => console.log(this.state)}>Debug</button>
 				<img alt="Template Thumbnail" src={this.state.templateImg} width="25%"/>
 				<h1>{this.state.templateTitle}</h1>
 				<p>{this.state.templateAuthor}</p>
 				<button onClick={this.setRedirectToCreate}>Create a Tierlist from this Template</button>
+                <div maxWidth="sm" className="tierLists">
+				<h2>TierLists based on template</h2>
+				<hr style={{width:50 +"%"}}/>
 				{
 					this.state.tierLists.map((tl) => { 
 						return (
-						<Card>
+						<Card style={{backgroundColor: "#0f0f0f"}}>
 							<CardContent className="TemplateDetailView">
 								<Typography variant="h5" component="h2">
 									{tl.title}
 								</Typography>
-								<Typography color="textSecondary" gutterBottom>
+								<Typography style={{color:"grey"}} gutterBottom>
 								By: {tl.author}
 								</Typography>
 								<TierList tiers={tl.tiers} key={tl.id}/>
@@ -109,6 +115,7 @@ class TemplateDetailView extends Component{
 					})
 					.sort((a, b) => (a.id > b.id) ? 1 : ((b.id > a.id) ? -1 : 0))
 				}
+				</div>
 			</div>
 				
         )

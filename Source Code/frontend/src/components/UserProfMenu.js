@@ -4,7 +4,7 @@ import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import { Redirect } from 'react-router-dom';
-
+import '../css/UserProfileMenu.css'
 
 class UserProfileMenu extends Component{
     
@@ -73,7 +73,7 @@ class UserProfileMenu extends Component{
 
         return (
             <div>
-                <Button aria-controls="simple-menu" aria-haspopup="true" onClick={this.handleClick}>
+                <Button className="dropdownMenu" aria-controls="simple-menu" aria-haspopup="true" onClick={this.handleClick}>
                             {this.state.username}
                 </Button>
                 <Menu

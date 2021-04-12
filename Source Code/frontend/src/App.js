@@ -12,7 +12,7 @@ import CreateTierList from './components/CreateTierList';
 import TemplateDetailView from './components/TemplateDetailView';
 import UserSignUp from './components/UserSignUp';
 import UserLogin from './components/Login'
-import Home from "./components/Home"
+import Home from "./components/home"
 import ProfilePage from "./components/ProfilePage"
 
 

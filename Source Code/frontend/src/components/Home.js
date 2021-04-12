@@ -1,9 +1,10 @@
 import { Component } from 'react';
 import React from "react";
-import '../css/Home.css';
+import '../css/home.css';
 import Navbar from './Navbar';
 import { Redirect } from "react-router-dom";
 import TemplateDisplayComponent from './TemplateDisplayComponent';
+import { Container } from '@material-ui/core';
 
 class Home extends Component{
 
@@ -27,7 +28,7 @@ class Home extends Component{
             templates: [],
             redirect: null
         }
-        //document.body.style = 'background-color: #0f0f0f;';
+        document.body.style = 'background-color: #0f0f0f;';
 
     }
     async componentDidMount() {
@@ -81,8 +82,9 @@ class Home extends Component{
         return (
             <div className="home">
                 <Navbar userId={this.state.userId} onLogOut={this.onLogOut} currentPage={"home"}/>   
-                GALLERY
-                <div>
+                <Container  maxWidth="sm" className="gallery">
+                <h1>Template Gallery</h1>
+                <div id="grid-container">
                     {this.state.templates.map((t) => {
                         return <TemplateDisplayComponent 
                                     img={t.img}
@@ -93,6 +95,7 @@ class Home extends Component{
                                 /> 
                     })}
                 </div>
+                </Container>
             </div>
 
         );
