@@ -277,7 +277,7 @@ class CreateTemplate extends Component {
 	tierLabelListener(ev) {
 		let editedTierId = ev.target.id
 		let newTierName = ev.target.value
-		console.log(ev.target)
+
 		let newTierListState = this.state.tierlist.map((tier) => {
 			if (tier.id === editedTierId) {
 				tier.tierName = newTierName

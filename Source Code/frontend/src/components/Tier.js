@@ -6,16 +6,28 @@ import '../css/TierList.css'
 
 
 class Tier extends React.Component {
+    constructor(props) {
+        super(props)
+        console.log(props)
+        this.state = {tierName: this.props.tierName}
+    }
+
+
+    componentWillReceiveProps(nextProps) {
+        this.setState({ tierName: nextProps.tierName });  
+    }
 
     render() {
-        var tierNameLabel = <h1 className="TierLabel">{this.props.tierName}</h1>
+        console.log(this.state.tierName)
+        var tierNameLabel = <h1 className="TierLabel">{this.state.tierName}</h1>
         var deleteButton = null
         // This is a unsorted tier
         if (this.props.isEditable && this.props.id !== "-1") {
                 tierNameLabel = <input 
                                     className="EditableTierLabel"
-                                    type="text" 
-                                    value={this.props.tierName} 
+                                    type="text"
+                                    id={this.props.id} 
+                                    value={this.state.tierName} 
                                     onChange={this.props.tierLabelListener}/>
                 deleteButton = <button className="DeleteTierButton" onClick={this.props.onDeleteTier}>Delete</button>
         }
