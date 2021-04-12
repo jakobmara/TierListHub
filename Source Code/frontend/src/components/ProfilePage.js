@@ -14,6 +14,10 @@ class ProfilePage extends Component {
     constructor(props){
         super(props)
         console.log("profile page this:",this)
+
+        this.setRedirectToTemplateDetailView = this.setRedirectToTemplateDetailView.bind(this)
+
+
         this.state = {
             userId: this.props.match.params.userId,
             tierLists: [],
@@ -73,6 +77,13 @@ class ProfilePage extends Component {
         window.history.replaceState({}, document.title)
 		this.setState({redirect: "/"})
 	}
+
+    setRedirectToTemplateDetailView(e) {
+        let id = e.target.id
+        let redirectUrl = "/templateDetail/" + id
+        console.log(e.target)
+        this.setState({ redirect: redirectUrl, redirectTemplateId: id})
+    }
 
     render(){
         if (this.state.redirect) {
