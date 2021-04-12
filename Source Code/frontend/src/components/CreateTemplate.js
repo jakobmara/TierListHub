@@ -263,7 +263,6 @@ class CreateTemplate extends Component {
 
 	onDeleteTier(ev) {
 		let deleteTierId = ev.target.parentNode.id
-
 		var newTierListState = this.state.tierlist.slice()
 		newTierListState.splice(newTierListState.findIndex((tier) => tier.id === deleteTierId), 1)
 
@@ -276,9 +275,9 @@ class CreateTemplate extends Component {
 	}
 
 	tierLabelListener(ev) {
-		let editedTierId = ev.target.parentNode.id
+		let editedTierId = ev.target.id
 		let newTierName = ev.target.value
-
+		console.log(ev.target)
 		let newTierListState = this.state.tierlist.map((tier) => {
 			if (tier.id === editedTierId) {
 				tier.tierName = newTierName

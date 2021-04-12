@@ -24,9 +24,6 @@ class TierList extends Component {
     sortTiers(a, b) {
         var res = 0
 
-        console.log(a.id)
-        console.log(b.id)
-        console.log("---")
         if (a.id === "-1") {
             return 1
         } else if (b.id === "-1") {
@@ -59,6 +56,9 @@ class TierList extends Component {
                             draggable={true}
                             handleDragOnItem={this.props.handleDragOnItem}
                             handleDropOnTier={this.props.handleDropOnTier}
+
+                            onDeleteTier={this.props.onDeleteTier}
+                            tierLabelListener={this.props.tierLabelListener}
                         />)
                     )
                 }
