@@ -4,7 +4,8 @@ import TemplateDialogForm from './TemplateDialogForm'
 import '../css/CreateTemplate.css';
 import Navbar from './Navbar';
 import { Redirect } from "react-router-dom";
-
+import { Button } from '@material-ui/core';
+ 
 class CreateTemplate extends Component {
 
 	constructor(props) {
@@ -72,8 +73,8 @@ class CreateTemplate extends Component {
 						handleDragOnItem={this.handleDragOnItem}
 						handleDropOnTier={this.handleDropOnTier}
 					/>
-					<div className="Tier">
-						<button onClick={this.addNewTier}>Add New Tier</button>
+					<div className="Tier" style={{textAlign:"right", overflow:"auto"}}>
+					<Button variant="outlined" color="inherit" onClick={this.addNewTier}>Add New Tier</Button>
 
 						<input 
 							type="file"
@@ -86,6 +87,8 @@ class CreateTemplate extends Component {
 							onDragOver={(ev) => ev.preventDefault()}
 							onDrop={this.deleteItem}
 							alt=""
+							className="trash"
+							style={{float:"right"}}
 						/>
 					</div>
 				</div>

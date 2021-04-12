@@ -60,3 +60,8 @@
 .EditableTierLabel{
   min-height: 90%;
 }
+.trash{
+  float: right;
+  margin-left: 60%;
+  height: 128px;
+}
