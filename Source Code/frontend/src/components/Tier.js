@@ -39,7 +39,7 @@ class Tier extends React.Component {
                 onDrop={this.props.handleDropOnTier}
                 onDragOver={(ev) => ev.preventDefault()}>
                 {deleteButton}
-                <div className="TierLabel">
+                <div className="">
                     {tierNameLabel}
                 </div>
                 <div className="TierItems" id={this.props.id}>

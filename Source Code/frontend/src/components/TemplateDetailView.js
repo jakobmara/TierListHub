@@ -5,7 +5,7 @@ import Navbar from './Navbar'
 import TierList from './TierList'
 
 import '../css/TemplateDetailView.css';
-import { Card, CardContent, Typography, Paper, Container} from '@material-ui/core';
+import { Card, CardContent, Typography, Paper, Container, Button} from '@material-ui/core';
 
 
 class TemplateDetailView extends Component{
@@ -91,11 +91,19 @@ class TemplateDetailView extends Component{
         return(
 			<div className="DetailPaper"> 
 				<Navbar userId={this.state.userId}/>
-				<img alt="Template Thumbnail" src={this.state.templateImg} width="25%"/>
+				<Container className="templateDisplay" width="sm">
 				<h1>{this.state.templateTitle}</h1>
-				<p>{this.state.templateAuthor}</p>
-				<button onClick={this.setRedirectToCreate}>Create a Tierlist from this Template</button>
-                <div maxWidth="sm" className="tierLists">
+
+				<img alt="Template Thumbnail" src={this.state.templateImg} width="25%"/>
+				<p>By: {this.state.templateAuthor}</p>
+				<Button variant="outlined" color="primary" className="login-btn" onClick={this.setRedirectToCreate}>Create a Tierlist from this Template</Button>
+
+				</Container>
+				<div style={{textAlign:"center"}}>
+				</div>
+				<div maxWidth="sm" className="tierLists">
+				<br/>
+				<br/>
 				<h2>TierLists based on template</h2>
 				<hr style={{width:50 +"%"}}/>
 				{

@@ -40,10 +40,10 @@
 .TierLabel {
   text-align: center;
   flex: content;
-  height: 100%;
-  border: #505050;
+  min-height: 100%;
+  border: grey;
+  border-style: ridge;
   border-radius: 3px;
-  border-style: solid;
 }
 
 .TierItem {
@@ -56,4 +56,7 @@
   display: flex;
   margin-left: 15%;
   margin-right: 15%;
+}
+.EditableTierLabel{
+  min-height: 90%;
 }

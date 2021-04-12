@@ -3,6 +3,7 @@ import { Redirect } from "react-router-dom";
 
 import TierList from './TierList.js'
 import Navbar from './Navbar'
+import Button from '@material-ui/core/Button';
 
 import '../css/CreateTierList.css';
 
@@ -43,15 +44,16 @@ class CreateTierList extends Component {
 			<div>
 				<Navbar userId={this.state.userId}/>
 				<div className="CreateTierList">
-					<button onClick={(e) => console.log(this.state)}>Debug</button>
-					<TierList 
+				<br/>
+				<br/>					
+				<TierList 
 						tiers={this.state.tiers}
 						isEditable={false}
 						draggable={true}
 						handleDragOnItem={this.handleDragOnItem}
 						handleDropOnTier={this.handleDropOnTier}
 					/>
-					<button onClick={this.submitTierList}>Submit Template</button>
+				<Button variant="outlined" color="primary" className="login-btn" onClick={this.setRedirectToCreate}>Create Tierlist</Button>
 				</div>
 			</div>
 			

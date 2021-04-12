@@ -1,8 +1,4 @@
 .TierLabel {
-    border: red;
-}
-
-.TierLabel {
     min-height: 64px;
 }
 
@@ -21,4 +17,7 @@
 .DeleteTierButton{
     background-color: #3a3a3a;
     color: white;
+}
+.inputLabel{
+    max-width: max-content;
 }

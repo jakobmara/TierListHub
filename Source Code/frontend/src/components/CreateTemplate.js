@@ -58,7 +58,8 @@ class CreateTemplate extends Component {
 			<div className="CreateTemplate">
 				<Navbar userId={this.state.userId} onLogOut={this.onLogOut} currentPage={""}/>
 
-				<button onClick={(e) => console.log(this)}>Debug</button>
+				<br/>
+				<br/>
 				
 				<div className="TierListContainer">
 				<TierList 
