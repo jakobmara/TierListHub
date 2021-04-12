@@ -37,13 +37,10 @@ class UserSignUp extends Component {
     }
     setUsername(e){
         this.setState({username:e.target.value})
-        console.log("username: " + e.target.value)
     }
 
     setPassword(e){
         this.setState({password:e.target.value})
-
-        console.log("password: " + e.target.value)
     }
 
     setConfirmation(e){
