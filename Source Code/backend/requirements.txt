@@ -1,2 +1,2 @@
-Python3.9
-Flask
+flask
+flask_cors
