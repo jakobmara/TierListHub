@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import Tier from './Tier.js'
+import TierList from './TierList.js'
 import TemplateDialogForm from './TemplateDialogForm'
 import '../css/CreateTemplate.css';
 import Navbar from './Navbar';
@@ -22,8 +22,7 @@ class CreateTemplate extends Component {
 
 		this.submitTemplate = this.submitTemplate.bind(this)
 
-		console.log(this.props)
-
+		
 		this.state = {
 			tierlist: [
 				{id: "1", tierName: "S", items: []},
@@ -62,39 +61,34 @@ class CreateTemplate extends Component {
 				<button onClick={(e) => console.log(this)}>Debug</button>
 				
 				<div className="TierListContainer">
-					{this.state.tierlist
-						.sort((a, b) => (a.id > b.id) ? 1 : ((b.id > a.id) ? -1 : 0))
-						.map((tier) => (
-							<Tier
-								id={tier.id}
-								key={tier.id}
-								tierName={tier.tierName}
-								items={tier.items}
-								isEditable={true}
-								tierLabelListener={this.tierLabelListener}
-								onDeleteTier={this.onDeleteTier}
+				<TierList 
+						tiers={this.state.tierlist}
+						isEditable={true}
+						tierLabelListener={this.tierLabelListener}
+						onDeleteTier={this.onDeleteTier}
 
-								draggable={true}
-								handleDragOnItem={this.handleDragOnItem}
-								handleDropOnTier={this.handleDropOnTier}
-							/>)
-						)
-					}
-				</div>
-				<div className="AddNewItemContainer">
-					<input 
-						type="file"
-						accept="image/*"
-						onChange={this.addNewTierItem}
+						draggable={true}
+						handleDragOnItem={this.handleDragOnItem}
+						handleDropOnTier={this.handleDropOnTier}
 					/>
-					<img
-						src="https://static.thenounproject.com/png/1237-200.png"
-						onDragOver={(ev) => ev.preventDefault()}
-						onDrop={this.deleteItem}
-						alt=""
-					/>
-					<button onClick={this.addNewTier}>Add New Tier</button>
+					<div className="Tier">
+						<button onClick={this.addNewTier}>Add New Tier</button>
+
+						<input 
+							type="file"
+							accept="image/*"
+							onChange={this.addNewTierItem}
+						/>
+
+						<img
+							src="https://static.thenounproject.com/png/1237-200.png"
+							onDragOver={(ev) => ev.preventDefault()}
+							onDrop={this.deleteItem}
+							alt=""
+						/>
+					</div>
 				</div>
+				
 				<TemplateDialogForm submitTemplate={this.submitTemplate}/>
 			</div>
 		);

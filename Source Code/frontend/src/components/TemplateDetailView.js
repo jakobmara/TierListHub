@@ -5,6 +5,7 @@ import Navbar from './Navbar'
 import TierList from './TierList'
 
 import '../css/TemplateDetailView.css';
+import { Card, CardContent, Typography, Paper} from '@material-ui/core';
 
 
 class TemplateDetailView extends Component{
@@ -84,9 +85,8 @@ class TemplateDetailView extends Component{
 		}
 
         return(
-            <div className="TemplateDetailView">
+			<div className="DetailPaper"> 
 				<Navbar userId={this.state.userId}/>
-
 				<button onClick={(e) => console.log(this.state)}>Debug</button>
 				<img alt="Template Thumbnail" src={this.state.templateImg} width="25%"/>
 				<h1>{this.state.templateTitle}</h1>
@@ -95,15 +95,22 @@ class TemplateDetailView extends Component{
 				{
 					this.state.tierLists.map((tl) => { 
 						return (
-						<div>
-							<h2>{tl.title}</h2>
-							<p>{tl.author}</p>
-							<TierList tiers={tl.tiers} key={tl.id}/>
-						</div>)
+						<Card>
+							<CardContent className="TemplateDetailView">
+								<Typography variant="h5" component="h2">
+									{tl.title}
+								</Typography>
+								<Typography color="textSecondary" gutterBottom>
+								By: {tl.author}
+								</Typography>
+								<TierList tiers={tl.tiers} key={tl.id}/>
+							</CardContent>
+						</Card>)
 					})
 					.sort((a, b) => (a.id > b.id) ? 1 : ((b.id > a.id) ? -1 : 0))
 				}
 			</div>
+				
         )
     }
 

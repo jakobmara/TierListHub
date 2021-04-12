@@ -1,5 +1,9 @@
 import { Component } from "react";
+import { List } from '@material-ui/core/';
+
 import Tier from './Tier'
+
+import '../css/TierList.css'
 
 
 class TierList extends Component {
@@ -16,13 +20,34 @@ class TierList extends Component {
         this.setState({ tiers: nextProps.tiers });  
     }
 
+
+    sortTiers(a, b) {
+        var res = 0
+
+        console.log(a.id)
+        console.log(b.id)
+        console.log("---")
+        if (a.id === "-1") {
+            return 1
+        } else if (b.id === "-1") {
+            return -1
+        }
+
+        if (a.id > b.id) {
+            res = 1
+        } else if (b.id > a.id) {
+            res = -1
+        }
+
+        return res
+    }
+
     render() {
-        console.log("Rendering TierList")
         return (
-            <div className="TierListContainer">
+            <List className="TierList">
                 {
                 this.state.tiers
-                    .sort((a, b) => (a.id > b.id) ? 1 : ((b.id > a.id) ? -1 : 0))
+                    .sort((a, b) => this.sortTiers(a, b))
                     .map((tier) => (
                         <Tier
                             id={tier.id}
@@ -37,7 +62,7 @@ class TierList extends Component {
                         />)
                     )
                 }
-        </div>
+        </List>
         )
         
     }

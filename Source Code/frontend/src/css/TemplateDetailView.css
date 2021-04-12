@@ -3,5 +3,23 @@
     color: white;
     text-align: center;
     height: 100%;
-    margin: 0;
+    margin-inline: 15%;
+    margin-block: 25px;
+}
+
+.TemplateBackground {
+    background-color: #202020;
+    margin: auto;
+}
+
+.DetailPaper {
+    background-color: #0f0f0f;
+    height: 100%;
+}
+
+.Tier {
+    min-height: 100%;
+}
+
+.TierLabel {
 }

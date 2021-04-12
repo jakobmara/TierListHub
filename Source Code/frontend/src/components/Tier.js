@@ -1,6 +1,9 @@
 import React from 'react'
 import TierItem from './TierItem.js'
 
+import '../css/TierList.css'
+
+
 class Tier extends React.Component {
 
     render() {
@@ -9,24 +12,24 @@ class Tier extends React.Component {
         // This is a unsorted tier
         if (this.props.isEditable && this.props.id !== "-1") {
                 tierNameLabel = <input 
+                                    className="EditableTierLabel"
                                     type="text" 
                                     value={this.props.tierName} 
-                                    onChange={this.props.tierLabelListener}
-                                    style={{textAlign: "center"}}/>
-                deleteButton = <button style={{float: "right"}} onClick={this.props.onDeleteTier}>Delete</button>
+                                    onChange={this.props.tierLabelListener}/>
+                deleteButton = <button className="DeleteTierButton" onClick={this.props.onDeleteTier}>Delete</button>
         }
-        let tierHeight = "64px"
 
         return (
             <div className="Tier"
-                style={{minHeight: tierHeight}}
                 id={this.props.id}
     
                 onDrop={this.props.handleDropOnTier}
                 onDragOver={(ev) => ev.preventDefault()}>
-                
-                {tierNameLabel}
-                <div className="TierContainer" id={this.props.id}>
+                {deleteButton}
+                <div className="TierLabel">
+                    {tierNameLabel}
+                </div>
+                <div className="TierItems" id={this.props.id}>
                     {this.props.items.map((tierItem) => (
                         <TierItem
                             id={tierItem.id}
@@ -41,7 +44,6 @@ class Tier extends React.Component {
                         />)
                     )}
                 </div>
-                {deleteButton}
             </div>
         )
     }
