@@ -53,7 +53,7 @@ class CreateTierList extends Component {
 						handleDragOnItem={this.handleDragOnItem}
 						handleDropOnTier={this.handleDropOnTier}
 					/>
-				<Button variant="outlined" color="primary" className="login-btn" onClick={this.setRedirectToCreate}>Create Tierlist</Button>
+				<Button variant="outlined" color="primary" className="login-btn" onClick={this.submitTierList}>Create Tierlist</Button>
 				</div>
 			</div>
 			
