@@ -92,7 +92,6 @@ class Navbar extends Component{
 
     render(){
         if (this.state.redirect){
-            console.log("REDIRECTING AGAIN")
             return <Redirect 
 						to={{
 							pathname : this.state.redirect,

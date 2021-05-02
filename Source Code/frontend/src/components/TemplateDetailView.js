@@ -90,7 +90,7 @@ class TemplateDetailView extends Component{
 
         return(
 			<div className="DetailPaper"> 
-				<Navbar userId={this.state.userId}/>
+                <Navbar userId={this.state.userId} onLogOut={this.onLogOut} currentPage={"tempDetailView"}/>   
 				<Container className="templateDisplay" width="sm">
 				<h1>{this.state.templateTitle}</h1>
 

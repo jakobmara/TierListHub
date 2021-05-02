@@ -4,7 +4,7 @@ from flask import current_app, g
 import hashlib
 import os
 import json 
-DBNAME = os.path.join(os.path.curdir, "CP476TP.db")
+DBNAME = os.path.join(os.path.curdir, "userData.db")
 
 
 
