@@ -128,7 +128,6 @@ class CreateTemplate extends Component {
 			headers: {'Content-Type': 'application/json'},
 			body: JSON.stringify(requestBody)
 		}
-		console.log(submitTemplateRequest)
 		fetch("http://localhost:5000/uploadTemplate", submitTemplateRequest)
 		.then((r) => {
 			if (r.ok) {
@@ -148,22 +147,15 @@ class CreateTemplate extends Component {
 			dragTierId: ev.currentTarget.parentNode.id,
 			dragType:"item"
 		})
-
-		console.log("In Item Drag")
-		console.log("DragID: " + ev.currentTarget.id)
-		console.log("DragTierID: " + ev.currentTarget.parentNode.id)
 	}
 
 	handleDropOnTier(ev) {
-		console.log("Dropped On Tier")
-		console.log("DropTierID: " + ev.currentTarget.id)
 
 		switch(this.state.dragType) {
 			case "item":
 				this.setState({tierlist: this.handleItemDropOnTier(ev)})
 				break
 			case "tier":
-				console.log("Dragged tier on tier")
 				break		
 			default:
 				console.log("Got unknown drag and drop!")	
@@ -195,7 +187,7 @@ class CreateTemplate extends Component {
 
 
 	async addNewTierItem(ev) {
-		if (ev.target.files.length == 0) {
+		if (ev.target.files.length === 0) {
 			return
 		}
 
@@ -204,7 +196,6 @@ class CreateTemplate extends Component {
 		var maxId = this.state.itemIdCounter
 		this.setState({itemIdCounter: maxId + 1})
 
-		console.log(maxId)
 
 		const blob = await fetch(file).then(r => r.blob())
 

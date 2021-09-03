@@ -2,7 +2,6 @@ import { Component } from 'react';
 import React from "react";
 import Navbar from './Navbar';
 import {
-    BrowserRouter as Router,
     Redirect
   } from "react-router-dom";
 
@@ -34,7 +33,6 @@ class UserLogin extends Component {
     handleLogin(e){
         e.preventDefault()
         if (this.valIdLogin()){
-            console.log("sending data")
             let requestInfo = {
                 method: 'POST',
                 headers: {
@@ -44,16 +42,12 @@ class UserLogin extends Component {
             }
             fetch('http://localhost:5000/login', requestInfo)
             .then(response => {
-                console.log("response: " + response)
                 return response.json()
             })
             .then(json => {
-                console.log(json)
-                console.log("Log userId: " + json.userId)
                 if (json.userId === undefined){
                     this.setState({errorMessage: json.errorMessage})
                 }else{
-                    console.log(json)
                     this.setState({errorMessage: ""})
                     this.setState({userId: json.userId})
                     this.setState({redirect: "/"});                   

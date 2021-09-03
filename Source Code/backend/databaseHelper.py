@@ -147,7 +147,6 @@ def deleteTemplate(userId, templateId):
     cur.execute('PRAGMA foreign_keys = ON')
     sql = ''' DELETE FROM templates WHERE userId = ? AND uid = ? '''
     data = [userId, templateId]
-    print(f"DELETING userId: {userId} template id: {templateId}")
 
     cur.execute(sql,data)
     conn.commit()
@@ -191,7 +190,6 @@ def createTemplate(userId, title, labels, titleImage, images) -> int:
     conn = sqlite3.connect(DBNAME)
 
     cur = conn.cursor()
-    print(f"userId: {userId} template name: {title}")
     # Used to find template ID of newly inserted template
     sql = f''' SELECT t.uid FROM templates as t WHERE t.userId = ? AND t.uid = ? '''
     
@@ -202,7 +200,6 @@ def createTemplate(userId, title, labels, titleImage, images) -> int:
     conn.commit()
     cur.close()
     conn.close()
-    print(f"temp id: {templateId}")
 
     # RN assumeing images is an array of base64 encoded strings... However I will most likely have to do some string manipulation to turn in array
     
@@ -269,8 +266,6 @@ def getTemplateFromTemplateId(templateId) -> array:
         "author" : getUserName(template[1])
         }
 
-    print(f"labels:")
-    print(type(template[3]))
     cur.close()
     conn.close()
 
@@ -353,7 +348,6 @@ def getUidFromLogin(name, password):
     cur = conn.cursor()
 
     newPass = hashlib.sha1(password.encode('utf-8')).hexdigest()
-    print(f"username: {name} password: {newPass}")
     sql = '''SELECT * FROM users WHERE username = ? AND password = ? '''
     data = [name,newPass]
 
@@ -372,7 +366,6 @@ def getUserName(userId):
     conn = sqlite3.connect(DBNAME)
     cur = conn.cursor()
     sql = ''' SELECT username FROM users WHERE uid = ?'''
-    print(f"userID for getUserName: {userId}")
     data = [userId]
     cur.execute(sql, data)
     name = cur.fetchone()[0]
@@ -551,7 +544,6 @@ def testDB():
     #createTemplate(2,"Levi's MarioList","S+,A,B,C,D,F", images)
 
     insertTemplate(1,"marioList","S,A,B,C,D,F", TEMP_IMG)
-    print("does exist: ")
     #createTierList(2,-1, "mario rankings", "Levi's Mario","S,A,F","S:Mario,Bowser\A:Peach, Wario\F:Toad, Waluigi",titleImage,images)
     #deleteTierList(2,1)
 

@@ -5,7 +5,7 @@ import Navbar from './Navbar'
 import TierList from './TierList'
 
 import '../css/TemplateDetailView.css';
-import { Card, CardContent, Typography, Paper, Container, Button} from '@material-ui/core';
+import { Card, CardContent, Typography, Container, Button} from '@material-ui/core';
 
 
 class TemplateDetailView extends Component{
@@ -29,7 +29,6 @@ class TemplateDetailView extends Component{
 		let templateRequestUrl = "http://localhost:5000/template/" + this.state.templateId
 		let templateResponse = await fetch(templateRequestUrl)
 		let templateJson = await templateResponse.json()
-		console.log(templateJson)
 
 		this.setState({
 			templateTitle: templateJson.templateName,
@@ -40,7 +39,6 @@ class TemplateDetailView extends Component{
 		let tierListsRequestUrl = "http://localhost:5000/tierLists?templateId=" + this.state.templateId
 		let tierListsResponse  = await fetch(tierListsRequestUrl)
 		let tierListJson = await tierListsResponse.json()
-		console.log(tierListJson)
 		let tierLists = tierListJson.map((tl) => {
 
 			return {
@@ -61,7 +59,6 @@ class TemplateDetailView extends Component{
 			}
 		})
 		
-		console.log(tierLists)
 		this.setState({ tierLists: tierLists })
 	}
 

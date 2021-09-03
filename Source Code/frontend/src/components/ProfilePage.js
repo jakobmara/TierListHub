@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import { Redirect } from "react-router-dom";
 import React from "react";
-import { Card, CardContent, Typography, Paper, Container} from '@material-ui/core';
+import { Card, CardContent, Typography, Container} from '@material-ui/core';
 
 import Navbar from './Navbar';
 import TemplateDisplayComponent from './TemplateDisplayComponent';
@@ -13,7 +13,6 @@ class ProfilePage extends Component {
 
     constructor(props){
         super(props)
-        console.log("profile page this:",this)
 
         this.setRedirectToTemplateDetailView = this.setRedirectToTemplateDetailView.bind(this)
 
@@ -33,7 +32,6 @@ class ProfilePage extends Component {
 
         let request = await fetch(getTemplatesURL)
         let request_json = await request.json()
-        console.log(request_json)
         let templates = request_json.map((template) => {
             return {
                 id: template.id,
@@ -81,7 +79,6 @@ class ProfilePage extends Component {
     setRedirectToTemplateDetailView(e) {
         let id = e.target.id
         let redirectUrl = "/templateDetail/" + id
-        console.log(e.target)
         this.setState({ redirect: redirectUrl, redirectTemplateId: id})
     }
 
@@ -106,6 +103,7 @@ class ProfilePage extends Component {
                                         author={this.author}
                                         onClick={this.setRedirectToTemplateDetailView}
                                         id={t.id}
+                                        key={t.id}
                                     /> 
                         })}
                     </div>
@@ -115,7 +113,7 @@ class ProfilePage extends Component {
                 {
 					this.state.tierLists.map((tl) => { 
 						return (
-                            <Card style={{backgroundColor: "#0f0f0f"}}>
+                            <Card key={tl.id} style={{backgroundColor: "#0f0f0f"}}>
                                 <CardContent className="TemplateDetailView">
                                     <Typography variant="h5" component="h2">
                                         {tl.title}

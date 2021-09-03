@@ -19,5 +19,5 @@ Tierhub uses Flask to serve the CRUD API that connects the front end to the data
 TierHub's data layer is powered by SQLite3.
 
 ## How to run TierHub
-1. Follow the README in ./backend/
-2. Follow the README in ./frontend/
+1. Follow the README in ./Source Code/backend/
+2. Follow the README in ./Source Code/frontend/

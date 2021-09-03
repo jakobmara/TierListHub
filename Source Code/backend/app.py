@@ -17,9 +17,7 @@ def addUser():
     data = json.loads(request.data.decode('UTF-8'))
     user = data["username"]
     password = data["password"]
-    print(f"USER: {user}")
     if userNameExists(user):
-        print("user already ")
         resp = jsonify({"errorMessage": "username already exists"})
         resp.status_code = 404
 
@@ -38,7 +36,6 @@ def userLogin():
     data = json.loads(request.data.decode('UTF-8'))
     user = data["username"]
     password = data["password"]
-    print(f"USER: {user}")
     uID = getUidFromLogin(user, password)
     if uID != -1:
         print("Sucessfully logged in ")
@@ -82,32 +79,26 @@ def uploadTemplate():
 @app.route('/image/<templateId>/<imageId>', methods=['GET'])
 @cross_origin()
 def getImageFromTemplate(templateId, imageId):
-    print(templateId)
-    print(imageId)
     b64EncodedImg = getImage(templateId, imageId)
     mimeType = b64EncodedImg[b64EncodedImg.index(':') + 1:b64EncodedImg.index(';')]
     actualB64Img = b64EncodedImg[b64EncodedImg.index(','):]
     image_data = base64.b64decode(actualB64Img)
-    print(mimeType)
     return Response(image_data, mimetype=mimeType)
 
 
 @app.route('/image/<templateId>', methods=['GET'])
 @cross_origin()
 def getTemplateImage(templateId):
-    print(templateId)
     b64EncodedImg = getTemplateDisplayImage(templateId)
     mimeType = b64EncodedImg[b64EncodedImg.index(':') + 1:b64EncodedImg.index(';')]
     actualB64Img = b64EncodedImg[b64EncodedImg.index(','):]
     image_data = base64.b64decode(actualB64Img)
-    print(mimeType)
     return Response(image_data, mimetype=mimeType)
 
 
 @app.route('/template/<templateId>', methods=['GET'])
 @cross_origin()
 def getTemplateJson(templateId):
-    print(f"TemplateId: {templateId}")
     template_data = getTemplateFromTemplateId(templateId)
     if template_data is not None:
         template_data['items'] = {imageId:
@@ -139,19 +130,15 @@ def uploadTierlist():
 @app.route('/getUsername/<userId>', methods =['GET'])
 @cross_origin()
 def getUserNameFromId(userId):
-    print(f"USerId: {userId}")
-
     name = getUserName(userId)
 
     resp = jsonify({"userName": name})
     resp.status_code = 200
-    print(resp)
     return resp 
 
 @app.route('/templates', methods =["GET"])
 @cross_origin()
 def getTemplates():
-    print(request.args)
     pageNum = int(request.args.get('page'))
     pageSize = int(request.args.get('size'))
     templates = getTemplatePage(pageNum,pageSize)
@@ -170,7 +157,6 @@ def getTemplates():
 @app.route('/tierLists', methods =["GET"])
 @cross_origin()
 def getTierListsFromTemplateId():
-    print(request.args)
     tempId = int(request.args.get('templateId'))
     lists = getTierListFromTemplate(tempId)
 
@@ -226,10 +212,8 @@ def getUserTierLists():
         "rankings": json.loads(l[3]),
         "author": getUserName(l[1])
     } for l in userTierLists]
-    print(f"Formatted lists: {formatted_lists}")
     resp = jsonify(formatted_lists)
     resp.status_code = 200
-    print(resp)
     return resp
 
 if __name__ == '__main__':

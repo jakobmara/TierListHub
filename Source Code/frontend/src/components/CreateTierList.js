@@ -67,7 +67,6 @@ class CreateTierList extends Component {
 	async getTierListStateFromTemplateId() {
 		const response = await fetch("http://localhost:5000/template/" + this.state.templateId)
 		const templateJson = await response.json()
-		console.log(templateJson)
 
 		let tierLabels = templateJson.labels
 		var tiers = Object.keys(tierLabels).map((tierId) => {
@@ -80,7 +79,6 @@ class CreateTierList extends Component {
 		tiers.push({id: "-1", tierName: "Unsorted", items: unsortedItems})
 
 		this.setState({tiers: tiers})
-		console.log("Set tiers from API")
 	}
 
 	submitTierList() {
@@ -90,13 +88,10 @@ class CreateTierList extends Component {
 		}
 
 		let tierListName = prompt("Tierlist Title:")
-		console.log(tierListName)
 		if (tierListName === "") {
 			alert("A title must be provided to submit a Tierlist")
-			console.log("Got empty name")
 			return	
 		} else if (tierListName === null) {
-			console.log("Canceled submission")
 			return
 		}
 
@@ -117,7 +112,6 @@ class CreateTierList extends Component {
 			headers: {'Content-Type': 'application/json'},
 			body: JSON.stringify(requestBody)
 		}
-		console.log(submitTemplateRequest)
 		fetch("http://localhost:5000/uploadTierlist", submitTemplateRequest)
 		.then((r) => {
 				if (r.ok) {
@@ -136,21 +130,15 @@ class CreateTierList extends Component {
 			dragType:"item"
 		})
 
-		console.log("In Item Drag")
-		console.log("DragID: " + ev.currentTarget.id)
-		console.log("DragTierID: " + ev.currentTarget.parentNode.id)
 	}
 
 	handleDropOnTier(ev) {
-		console.log("Dropped On Tier")
-		console.log("DropTierID: " + ev.currentTarget.id)
 
 		switch(this.state.dragType) {
 			case "item":
 				this.setState({tiers: this.handleItemDropOnTier(ev)})
 				break
 			case "tier":
-				console.log("Dragged tier on tier")
 				break		
 			default:
 				console.log("Got unknown drag and drop!")	

@@ -5,17 +5,8 @@ import {
 
   } from "react-router-dom";
 import UserProfileMenu from "./UserProfMenu"
-import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-import Box from '@material-ui/core/Box';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    '& > *': {
-      margin: theme.spacing(1),
-    },
-  },
-}));
 
 
 
@@ -29,7 +20,6 @@ class Navbar extends Component{
         this.setRedirectToHomePage = this.setRedirectToHomePage.bind(this)
         this.createTemplate = this.createTemplate.bind(this)
 
-        console.log("navbar props: ", this.props)
         
         this.state = {
             redirect : null, 
@@ -37,10 +27,6 @@ class Navbar extends Component{
             anchorEl: null, 
             menuOpen: false}
 
-    }
-
-    componentDidMount(){
-        console.log("REMOUNTING")
     }
 
     onLogOut(){
@@ -51,8 +37,6 @@ class Navbar extends Component{
 
 
     pressedLogin(){
-        console.log("logging in")
-        console.log("THIS IN LOGIN",this)
 
         this.setState({redirect:"/login"})
         if (this.props.currentPage === "login"){
@@ -62,8 +46,6 @@ class Navbar extends Component{
 
     }
     pressedSignup(){
-        console.log("signing up")
-        console.log("this in signup:",this)
 
         this.setState({redirect:"/signup"})
         if (this.props.currentPage === "signup"){
@@ -82,7 +64,6 @@ class Navbar extends Component{
     }
 
     createTemplate(){
-        console.log("creating template")
         this.setState({ redirect: "/createTemplate"})
         if (this.props.currentPage === "createTemplate"){
             window.location.reload()
@@ -103,13 +84,11 @@ class Navbar extends Component{
         }
         var navButtons = []
         if (this.state.userId){
-            console.log(this.state)
             navButtons = [
-                <Button key="2" className="login-btn" onClick={this.createTemplate}>Create template</Button>,
-            <UserProfileMenu className="userProfileMenu" className="login-btn"userId = {this.state.userId} onLogOut={this.onLogOut}/>
+                <Button key="1" className="login-btn" onClick={this.createTemplate}>Create template</Button>,
+            <UserProfileMenu key="2" className="userProfileMenu login-btn" userId = {this.state.userId} onLogOut={this.onLogOut}/>
             ]
         } else {
-            console.log("NO USER ID GIVING DEFAULT BUTTONS")
             navButtons = [                    
                 <Button key="1" className ="login-btn"onClick={this.pressedSignup}>Sign Up</Button>,
                 <Button key="2" className="login-btn"onClick={this.pressedLogin}>Log In</Button>
@@ -121,7 +100,7 @@ class Navbar extends Component{
                 <div className="navBar">
                 <div className ="title">
                     <div className="flex-auto">
-                   <a href="#"><img className="logo" alt=""  onClick={this.setRedirectToHomePage} src="https://i.imgur.com/J5hmVvj.png"/></a>
+                   <img className="logo" alt="Website logo" onClick={this.setRedirectToHomePage} src="https://i.imgur.com/J5hmVvj.png"/>
                    </div>
                    <div className="flex-last">
                     {navButtons}

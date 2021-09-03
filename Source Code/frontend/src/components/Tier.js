@@ -1,6 +1,5 @@
 import React from 'react'
 import TierItem from './TierItem.js'
-import Button from '@material-ui/core/Button';
 
 import '../css/TierList.css'
 
@@ -8,7 +7,6 @@ import '../css/TierList.css'
 class Tier extends React.Component {
     constructor(props) {
         super(props)
-        console.log(props)
         this.state = {tierName: this.props.tierName}
     }
 

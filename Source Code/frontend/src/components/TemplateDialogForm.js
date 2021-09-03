@@ -32,14 +32,12 @@ class TempalteDialogForm extends Component {
 	}
 
 	handleSubmit() {
-		console.log("submitted")
 		this.props.submitTemplate(this.state)
 		this.handleClose()
 	}
 
 	handleClose() {
 		this.setState({open: false})
-		console.log(this)
 	};
 
 	_handleTextFieldChange(ev) {
@@ -65,7 +63,6 @@ class TempalteDialogForm extends Component {
 			const reader = new FileReader();
 
 			reader.onloadend = res => {
-				//console.log(res.target.result)
 				resolve(res.target.result);
 			};
 			reader.onerror = err => reject(err);
@@ -88,7 +85,7 @@ class TempalteDialogForm extends Component {
 							Select an Image to be used as the thumbnail for this Tierlist Template
 						</DialogContentText>
 						<div>
-							<img src={this.state.thumbnailUrl} width="128px" height="128px"/>
+							<img src={this.state.thumbnailUrl} alt="thumbnail" width="128px" height="128px"/>
 							<Button variant="contained" component="label">
 								Choose Image
 								<input type="file" accept="image/*" hidden onChange={this.addThumbnail}/>

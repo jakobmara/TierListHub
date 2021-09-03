@@ -10,8 +10,6 @@ class Home extends Component{
 
     constructor(props){  
         super(props);
-        console.log("IN HOME CONSTRUCTOR")
-        console.log(this.props.location)
 
         this.createTemplate = this.createTemplate.bind(this)
         this.onLogOut = this.onLogOut.bind(this);
@@ -19,7 +17,7 @@ class Home extends Component{
 
 
         var userId = null
-        if (this.props.location.state != undefined && this.props.location.state.userId != undefined) {
+        if (this.props.location.state !== undefined && this.props.location.state.userId !== undefined) {
             userId = this.props.location.state.userId
         }
 
@@ -35,7 +33,6 @@ class Home extends Component{
         let requestUrl = 'http://localhost:5000/templates?page=1&size=20'
         let request = await fetch(requestUrl)
         let request_json = await request.json()
-        console.log(request_json)
         let templates = request_json.map((template) => {
             return {
                 id: template.id,
@@ -44,12 +41,10 @@ class Home extends Component{
                 author: template.author
             }
         })
-        console.log(templates)
         this.setState({templates: templates})
     }
 
     onLogOut(){
-        console.log("IN home logging out")
         this.setState({userId: null})
         window.history.replaceState({}, document.title)
     }
@@ -62,13 +57,11 @@ class Home extends Component{
     setRedirectToTemplateDetailView(e) {
         let id = e.target.id
         let redirectUrl = "/templateDetail/" + id
-        console.log(e.target)
         this.setState({ redirect: redirectUrl, redirectTemplateId: id})
     }
 
     render(){
         if (this.state.redirect) {
-            console.log("redirecting with state")
             return <Redirect 
                         to={{
                             pathname : this.state.redirect,
@@ -92,6 +85,7 @@ class Home extends Component{
                                     author={this.author}
                                     onClick={this.setRedirectToTemplateDetailView}
                                     id={t.id}
+                                    key={t.id}
                                 /> 
                     })}
                 </div>

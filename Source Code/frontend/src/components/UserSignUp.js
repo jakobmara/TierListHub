@@ -4,7 +4,6 @@ import '../css/UserSignUp.css';
 import Navbar from './Navbar';
 
 import {
-    Route,
     Redirect
 
   } from "react-router-dom";
@@ -26,13 +25,11 @@ class UserSignUp extends Component {
         this.setUsername = this.setUsername.bind(this)
         this.setPassword = this.setPassword.bind(this)
         this.setConfirmation = this.setConfirmation.bind(this)
-        console.log("CONSTRUCTING")
     }
 
 
     
     valIdateLogin(){
-        console.log('valIditing login')
         return this.state.password.length > 0 && this.state.username.length > 0
     }
     setUsername(e){
@@ -52,11 +49,8 @@ class UserSignUp extends Component {
     }
 
     registerLogin(){
-        console.log("DO SOMETHING")
         if (this.valIdateLogin()){
             if (this.confirmPassword()){
-                //submit the info to backend
-                console.log("sent info to backend")
                 //this.setState({errorMessage: ""})
                 return true
 
@@ -66,7 +60,6 @@ class UserSignUp extends Component {
 
             }
         }else{
-            console.log("dIdn't pass check")
             this.setState({errorMessage: "Please fill out all fields"})
             return false
         }
@@ -75,7 +68,6 @@ class UserSignUp extends Component {
     handleSubmit(e){
         e.preventDefault()
         if (this.registerLogin()){
-            console.log("sending data")
             let requestInfo = {
                 method: 'POST',
                 headers: {
@@ -85,11 +77,9 @@ class UserSignUp extends Component {
             }
             fetch('http://localhost:5000/signUp',requestInfo)
             .then(response => {
-                console.log("response: " + response)
                 return response.json()
             })
             .then(json => {
-                console.log(json)
                 if (json.userId === undefined){
                     this.setState({errorMessage: json.errorMessage})
                 }else{
